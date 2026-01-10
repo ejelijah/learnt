@@ -1,0 +1,17 @@
+.image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    display: block;
+    margin: 0 auto;
+}
+
+.profile {
+    top: 20px;
+    right: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items:top;
+}

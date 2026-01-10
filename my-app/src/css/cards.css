@@ -1,0 +1,40 @@
+.flashcard{
+    cursor: pointer;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 360px;
+    margin: 0 auto;
+    min-height: 140px;
+    display: flex;
+    align-Items: center;
+    justify-Content: center;
+    text-Align: center;
+    background: white;
+    color: black;
+}
+
+.foldername{
+    margin: 4px;
+    padding: min(8px, 2%);
+    width: 300px;
+    border-Radius: 4px;
+    border: 1px solid #ccc,
+}
+
+.text{
+    margin: 4px;
+    padding: min(8px, 2%);
+    width: 300px;
+    border-Radius: 4px;
+    border: 1px solid #ccc
+}
+
+.buttons {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: min(8px, 2%);
+    width: 150px;
+    border-radius: 4px;
+    border: none
+}

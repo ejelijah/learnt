@@ -1,0 +1,374 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.home-container {
+  @apply min-h-screen bg-gradient-to-br from-blue-300 to-blue-800;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+    }
+  /* Header Styles */
+  .header {
+    @apply bg-blue-50 shadow-lg;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    gap: 1rem;
+    width: 100vw; /* Full viewport width */
+    margin: 0;
+    position: relative;
+    left: 0;
+    right: 0;
+    top: 0;
+  }
+
+  .logo{
+    @apply 
+    pl-4 text-2xl font-bold text-black;
+  }
+
+  .profile-wrapper{
+    @apply 
+    pl-4;
+  }
+
+  
+  .search-input {
+    @apply w-full max-w-md 
+           px-6 py-2
+           border border-slate-300 dark:border-slate-600
+           rounded-md
+           bg-white dark:bg-slate-800 
+           text-black dark:text-white 
+           placeholder-slate-500 dark:placeholder-slate-400
+           focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+  
+  /* Nav buttons */
+  .nav-buttons {
+    @apply flex justify-center gap-4
+           px-2 py-3 border-t border-slate-200 dark:border-slate-700
+           transition-all
+           font-medium;
+  }
+  
+  .nav-btn {
+    @apply px-4 py-2 
+           rounded-md 
+           bg-blue-600 text-white 
+           hover:bg-blue-700 
+           transition;
+  }
+  
+  .create-btn {
+    @apply bg-green-600 hover:bg-green-700;
+  }
+
+.profile-wrapper{
+    @apply 
+    cursor-pointer
+    hover:scale-105
+    transition-transform
+    ;
+}
+
+.main-content{
+    @apply 
+    px-8 py-8 max-w-7xl mx-auto;
+}
+.content-header{
+    @apply 
+    flex justify-between 
+    items-center mb-8;
+}
+
+.list-cards{
+    @apply 
+    text-3xl
+    font-bold
+    text-gray-800;
+}
+
+.deck-count{
+    @apply 
+    text-white;
+}
+
+.cards-grid {
+    @apply 
+    grid 
+    grid-cols-1
+    md:grid-cols-2
+    lg:grid-cols-4
+    xl:grid-cols-4
+    gap-6;
+}
+
+.card-template{
+    @apply 
+    bg-white
+    border-2
+    border-gray-200
+    rounded-xl
+    p-6
+    cursor-pointer
+    hover:border-green-500
+    hover:shadow-lg
+    hover:-translate-y-1
+    transition-all
+    flex
+    flex-col
+    items-center
+    text-center;
+}
+
+.card-icon{
+    @apply 
+    text-5xl
+    mb-4;
+}
+
+.card-title{
+    @apply 
+    text-xl
+    font-semibold
+    text-gray-800
+    mb-2;
+}
+
+.card-subtitle {
+  @apply text-black text-sm mb-4;
+}
+
+.card-footer {
+  @apply w-full pt-4 border-t border-black;
+}
+
+.card-date {
+  @apply text-black text-xs;
+}
+
+/* Empty State */
+.empty-state {
+  @apply text-center py-20;
+}
+
+.empty-icon {
+  @apply text-8xl mb-6;
+}
+
+.empty-text {
+  @apply text-xl text-gray-400 mb-8;
+}
+
+.create-first-btn {
+  @apply px-8 py-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all text-lg font-medium;
+}
+
+/* Options Modal */
+.modal-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50;
+}
+
+.options-modal {
+  @apply bg-white rounded-2xl p-10 max-w-lg w-11/12 relative;
+}
+
+.close-btn {
+  @apply absolute top-4 right-4 w-9 h-9 bg-gray-100 rounded-full hover:bg-gray-200 transition-all text-xl;
+}
+
+.options-modal h2 {
+  @apply text-3xl font-bold text-gray-800 mb-2;
+}
+
+.modal-subtitle {
+  @apply text-gray-500 mb-8;
+}
+
+.options-buttons {
+  @apply flex flex-col gap-4;
+}
+
+.option-btn {
+  @apply bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-green-500 hover:bg-green-50 transition-all text-left disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-icon {
+  @apply text-4xl mb-3;
+}
+
+.btn-text {
+  @apply text-xl font-semibold text-gray-800 mb-1;
+}
+
+.btn-desc {
+  @apply text-sm text-gray-500;
+}
+
+.edit-btn:hover {
+  @apply border-blue-500 bg-blue-50;
+}
+
+/* Study Mode */
+.study-mode-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50;
+}
+
+.study-card-container {
+  @apply bg-white rounded-2xl p-10 max-w-3xl w-11/12 max-h-[90vh] overflow-y-auto;
+}
+
+.study-header {
+  @apply flex justify-between items-center mb-6;
+}
+
+.card-counter {
+  @apply text-lg font-semibold text-gray-800;
+}
+
+.study-controls {
+  @apply flex gap-3;
+}
+
+.control-btn {
+  @apply px-4 py-2 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all;
+}
+
+.exit-btn:hover {
+  @apply border-red-500 bg-red-50;
+}
+
+.progress-bar {
+  @apply w-full h-2 bg-gray-200 rounded-full mb-8 overflow-hidden;
+}
+
+.progress-fill {
+  @apply h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-300;
+}
+
+.study-card-content {
+  @apply min-h-[250px] flex flex-col justify-center mb-8;
+}
+
+.question {
+  @apply text-3xl font-bold text-gray-800 text-center mb-6;
+}
+
+.answer-box {
+  @apply mt-8 p-6 bg-blue-50 border-2 border-blue-500 rounded-xl;
+}
+
+.answer-label {
+  @apply text-sm text-gray-500 mb-2;
+}
+
+.answer {
+  @apply text-xl text-gray-800;
+}
+
+.show-answer-btn {
+  @apply w-full py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all text-lg font-medium;
+}
+
+.response-buttons {
+  @apply flex gap-6;
+}
+
+.response-btn {
+  @apply flex-1 py-4 text-white rounded-lg transition-all text-lg font-medium;
+}
+
+.fail-btn {
+  @apply bg-red-500 hover:bg-red-600;
+}
+
+.pass-btn {
+  @apply bg-green-500 hover:bg-green-600;
+}
+
+/* Complete Modal */
+.complete-modal {
+  @apply bg-white rounded-2xl p-10 max-w-3xl w-11/12 max-h-[80vh] overflow-y-auto;
+}
+
+.complete-title {
+  @apply text-4xl font-bold text-gray-800 text-center mb-8;
+}
+
+.stats-container {
+  @apply flex justify-around p-8 bg-gray-50 rounded-xl mb-8;
+}
+
+.stat-box {
+  @apply text-center;
+}
+
+.stat-number {
+  @apply text-5xl font-bold mb-2;
+}
+
+.stat-number.passed {
+  @apply text-green-500;
+}
+
+.stat-number.failed {
+  @apply text-red-500;
+}
+
+.stat-number.score {
+  @apply text-blue-500;
+}
+
+.stat-label {
+  @apply text-lg text-gray-600;
+}
+
+.failed-cards-section {
+  @apply mb-8;
+}
+
+.failed-title {
+  @apply text-xl font-semibold text-red-500 mb-4;
+}
+
+.failed-cards-list {
+  @apply max-h-72 overflow-y-auto space-y-3;
+}
+
+.failed-card-item {
+  @apply p-4 bg-red-50 rounded-lg border-l-4 border-red-500;
+}
+
+.failed-question {
+  @apply font-semibold text-gray-800 mb-2;
+}
+
+.failed-answer {
+  @apply text-gray-600;
+}
+
+.complete-buttons {
+  @apply flex flex-wrap gap-4 justify-center;
+}
+
+.complete-btn {
+  @apply px-6 py-3 text-white rounded-lg transition-all font-medium;
+}
+
+.restudy-btn {
+  @apply bg-orange-500 hover:bg-orange-600;
+}
+
+.again-btn {
+  @apply bg-green-500 hover:bg-green-600;
+}
+
+.home-btn {
+  @apply bg-gray-600 hover:bg-gray-700;
+}

@@ -1,0 +1,19 @@
+{
+  "name": "start_up",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix my-app\"",
+    "start:backend": "npm start --prefix backend",
+    "start:frontend": "npm start --prefix my-app"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "openai": "^6.7.0",
+    "pdfjs-dist": "^5.4.149",
+    "pptx-parser": "^1.1.7-beta.9"
+  }
+}

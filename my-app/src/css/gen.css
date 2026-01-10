@@ -1,0 +1,93 @@
+body {
+    background: linear-gradient(to top,darkblue, lightblue);
+    font-family: Arial, sans-serif;
+    color: black;
+
+    justify-content: center;
+    align-items: center; 
+    min-height: 100vh;
+    margin: 0;
+    padding: 0; 
+    animation: rollIn 1s ease-in-out;
+    
+}
+ .gen {
+
+    justify-content: center;  
+    align-items: center; 
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    width: 100%;  
+  } 
+  
+  
+
+
+@keyframes rollIn {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    border-radius: 23px;
+    margin: 10px;
+
+}
+.buttons:hover {
+    color: #1577da4e;
+    cursor: pointer;
+}
+.error-message {
+  color: #fff;
+  background: #e74c3c;
+  padding: 8px 12px;
+  border-radius: 40px;
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 2px 8px
+   rgba(231, 76, 60, 0.1);
+}
+
+.container{
+    position: relative; /* Not absolute or fixed */
+    width: 100%;
+    min-height: 100vh;
+}
+
+.background-page {
+    z-index: 1;
+  }
+  
+  .foreground-page {
+    z-index: 10; /* Too high, overlapping everything */
+  }
+
+  
