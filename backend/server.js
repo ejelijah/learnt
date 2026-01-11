@@ -2,11 +2,9 @@
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
-import fetch from 'node-fetch';
 import { supabase } from './supabaseClient.js';
 import dotenv from 'dotenv';
 import mammoth from 'mammoth';
-import { pipeline } from '@xenova/transformers';
 import PdfParse from 'pdf-parse';
 import { PDFDocument } from "pdf-lib";
 import { createRequire } from "module";

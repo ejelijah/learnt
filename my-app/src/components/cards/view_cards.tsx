@@ -25,6 +25,7 @@ const ViewCards = () => {
     const navigate = useNavigate();
     const [containers, setContainers] = useState<Container[]>([]);
     const [filteredContainers, setFilteredContainers] = useState<Container[]>([]);
+    //remove the search quary to resolve the error on netlify
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedContainer, setSelectedContainer] = useState<Container | null>(null);
     const [showOptions, setShowOptions] = useState(false);

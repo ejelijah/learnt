@@ -3,7 +3,6 @@ import '../../css/gen.css';
 import '../../css/wel.css';
 import '../../css/cards.css';
 import { supabase } from '../../superbaseClient';
-import Profile from '../../components/InputField';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface Flashcard {
