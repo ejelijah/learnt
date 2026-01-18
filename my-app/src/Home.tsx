@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from './superbaseClient';
 import Profile from './components/Profile';
-import './css/Home.css'; // You'll need to create this
+import './css/Home.css' // You'll need to create this
 
 interface Container {
   id: string;
@@ -138,6 +138,14 @@ const Home = () => {
     setFailedCards([]);
     setStudyComplete(false);
   };
+
+
+  if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+  
 
   return (
     <div className="home-container">

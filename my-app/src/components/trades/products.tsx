@@ -81,18 +81,18 @@ const CreateProduct = () => {
     <div className="w-full max-w-3xl mx-auto  bg-opacity-10 backdrop-blur-lg rounded-lg p-6 shadow-lg">
       <button 
         onClick={() => navigate(-1)}
-        className="mb-6 p-2 hover:bg-gray-100 rounded-full transition-colors inline-flex items-center text-gray-600"
+        className="mb-6 p-2 rounded-full transition-colors inline-flex items-center btu hover:bg-gray-200"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         <span className="ml-1 font-medium">Back</span>
       </button>
 
-      <h1 className="text-3xl font-bold mb-8 text-gray-900">Create New Listing</h1>
+      <h1 className="text-3xl font-bold mb-8 text-primary">Create New Listing</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Image Upload Area */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700">Product Images (At least 1)</label>
+          <label className="block text-sm font-semibold text-secondary">Product Images (At least 1)</label>
           <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-blue-500 transition-colors bg-gray-50 relative">
             <input
               type="file"
@@ -134,7 +134,7 @@ const CreateProduct = () => {
 
         {/* Product Name */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700">Product Name</label>
+          <label className="block text-sm font-semibold text-secondary">Product Name</label>
           <input
             type="text"
             required
@@ -147,7 +147,7 @@ const CreateProduct = () => {
 
         {/* Price */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700">Price (USD)</label>
+          <label className="block text-sm font-semibold text-secondary">Price (USD)</label>
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-xs">USD</span>
             <input
@@ -163,7 +163,7 @@ const CreateProduct = () => {
 
         {/* Description */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-700">Description</label>
+          <label className="block text-sm font-semibold text-secondary">Description</label>
           <textarea
             required
             value={description}

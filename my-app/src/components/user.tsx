@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import '../css/gen.css';
-import '../css/wel.css';
 import { supabase } from '../superbaseClient';
 import logo from '../logo.svg';
+import '../css/gen.css';
 import { Link } from 'react-router-dom';
 
 export const DEFAULT_PHOTO = logo;
@@ -69,9 +68,28 @@ const User = () => {
     if (loading) return <div>Loading profile...</div>;
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
+    // On page load or in a useEffect
+if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+  
+  // To change the theme
+  const toggleTheme = () => {
+    if (document.documentElement.classList.contains('dark')) {
+      document.documentElement.classList.remove('dark')
+      localStorage.theme = 'light'
+    } else {
+      document.documentElement.classList.add('dark')
+      localStorage.theme = 'dark'
+    }
+  }
+  
+
     return (
         <div className="container">
-            <h2>Profile Setup</h2>
+            <h2 className='text-primary'>Profile Setup</h2>
             <img
                 src={profile?.photo_url || DEFAULT_PHOTO}
                 alt="Profile"
@@ -83,20 +101,36 @@ const User = () => {
                 }}
                 onLoad={() => console.log('Image loaded successfully:', profile?.photo_url)}
             />
-            <div style={{marginBottom: 8, color: 'white'}}>
+            <div className='text-secondary'>
                 <strong>Name:</strong> {profile?.name || 'Not set'}
             </div>
-            <div style={{ marginBottom: 8, color: 'white'}}>
+            <div className='text-secondary'>
                 <strong>School:</strong> {profile?.school || 'Not set'}
             </div>
             <div>
-                <p style={{ color: 'white' }}>
-                    To update your profile, please go to the <Link to="/input" style={{ color: 'blue' }}>change</Link>
+                <p className='text-secondary-p'>
+                    To update your profile, please go to the <button className='accent' onClick={() => {
+                        window.location.href = '/input';
+                    }}>
+                        update
+                    </button>
                 </p>
-                <p style={{ color: 'white' }}>
-                    If you have nothing to do you can go back home here <Link to="/Home" style={{ color: 'blue' }}>home</Link>
+                <p className='text-secondary-p'>
+                    If you have nothing to do you can go back home here 
+                    <button className='accent' onClick={() => {
+                        window.location.href = '/Home';
+                    }}>
+                     Home
+                    </button>
                 </p>
             </div>
+
+    <button
+      onClick={toggleTheme}
+      className="mt-4 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
+    >     
+      Toggle Mode
+    </button>
         </div>
     );
 };

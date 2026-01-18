@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../superbaseClient';
-
+import '../../css/gen.css';
 interface Product {
   id: string;
   prod_name: string;
@@ -115,7 +115,7 @@ const Create = () => {
 
       <div className="flex flex-col gap-6 mb-10 mt-12">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-primary text-3xl font-bold">
             {view === 'buy' ? 'Marketplace' : 'My Listings'}
           </h1>
 
@@ -145,7 +145,7 @@ const Create = () => {
           {view === 'manage' && (
             <div className="flex justify-end">
               <button 
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all font-semibold shadow-lg shadow-blue-500/25 flex items-center gap-2 transform active:scale-95"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all font-semibold shadow-lg shadow-blue-500/25 flex items-center gap-2 transform active:scale-95 "
                 onClick={() => navigate('/product')}
               >
                 + Create New Listing
@@ -214,7 +214,7 @@ const Create = () => {
               <div className="bg-gray-50 p-4 rounded-full text-gray-300">
                 <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
               </div>
-              <p className="text-gray-500 font-medium">
+              <p className=" text-secondary">
                 {view === 'buy' ? 'No products available from other sellers.' : "You haven't listed any products yet."}
               </p>
               {view === 'manage' && (
