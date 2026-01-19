@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
  "scripts": {
-  "build": "npm run build:frontend && npm run build:backend",
+  "build": "npm run build:my-app && npm run build:backend",
   "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix my-app\"",
   "start:backend": "npm start --prefix backend",
   "start:frontend": "npm start --prefix my-app",

@@ -78,16 +78,25 @@ const CreateProduct = () => {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto  bg-opacity-10 backdrop-blur-lg rounded-lg p-6 shadow-lg">
-      <button 
-        onClick={() => navigate(-1)}
-        className="mb-6 p-2 rounded-full transition-colors inline-flex items-center btu hover:bg-gray-200"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        <span className="ml-1 font-medium">Back</span>
-      </button>
+    <div className="flex flex-col min-h-screen w-full mx-auto bg-opacity-10 backdrop-blur-lg rounded-lg p-4 md:p-8 shadow-lg overflow-y-auto">
+  {/* Wrap the button in a div to ensure it stays in the block flow */}
+  <div className="w-full ">
+    <button 
+      onClick={() => navigate(-1)}
+      className="mt-6 p-2 rounded-full transition-colors inline-flex items-center hover:bg-gray-200 btn"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m15 18-6-6 6-6"/>
+      </svg>
+      <span className="ml-1 font-medium">Back</span>
+    </button>
+  </div>
 
-      <h1 className="text-3xl font-bold mb-8 text-primary">Create New Listing</h1>
+  <h1 className="text-3xl font-bold md:text-3xl text-primary">
+    Create New Listing
+  </h1>
+
+
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Image Upload Area */}

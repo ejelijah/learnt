@@ -9,7 +9,7 @@
     --glass-bg: rgba(255, 255, 255, 0.1);
     --text-primary: #000000;
     --text-secondary: #0f0101;
-    --accent-color: #fffefe;
+    --accent-color: #7e4c4c;
 
   }
 
@@ -18,8 +18,8 @@
     --bg-end: #1e3a8a;
     --glass-bg: rgba(0, 0, 0, 0.3);
     --text-primary: #ffffff;
-    --text-secondary: #d1d5db;
-    --accent-color: #79797a;
+    --text-secondary: #ffffff;
+    --accent-color: #ffffff;
   }
 
 
@@ -35,16 +35,21 @@
         @apply backdrop-blur-lg border border-white/30 rounded-xl shadow-lg p-6 max-w-md w-full px-10 mx-auto;
     }
 
-    .btu{
-      color: var(--text-secondary);
-    
-    }
+    .btu {
+      size: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    padding-left: 0.25rem;
+    color: var(--accent-color);
+  }
   }
 
 
 .text-primary {
   color: var(--text-primary);
-  padding: 1rem;
+  padding: 2rem;
 }
 
 .text-secondary {
@@ -55,11 +60,6 @@
     padding-top: 1rem;
     padding-bottom: 1rem;
   color: var(--text-secondary);
-}
-
-.accent {
-    padding-left: 0.25rem;
-  color: var(--accent-color);
 }
 
 }

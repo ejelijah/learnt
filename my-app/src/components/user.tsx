@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../superbaseClient';
-import logo from '../logo.svg';
 import '../css/gen.css';
+// import profileImg from '../assets/demo-profile.png';
 import { Link } from 'react-router-dom';
 
-export const DEFAULT_PHOTO = logo;
+
 
 
 interface UserProfile {
@@ -91,13 +91,13 @@ if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.match
         <div className="container">
             <h2 className='text-primary'>Profile Setup</h2>
             <img
-                src={profile?.photo_url || DEFAULT_PHOTO}
+                src={profile?.photo_url || 'https://via.placeholder.com/100'}
                 alt="Profile"
                 className="image"
                 style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', marginBottom: 16 }}
                 onError={(e) => {
                     console.error('Image failed to load:', profile?.photo_url);
-                    e.currentTarget.src = DEFAULT_PHOTO;
+                   
                 }}
                 onLoad={() => console.log('Image loaded successfully:', profile?.photo_url)}
             />
@@ -109,7 +109,7 @@ if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.match
             </div>
             <div>
                 <p className='text-secondary-p'>
-                    To update your profile, please go to the <button className='accent' onClick={() => {
+                    To update your profile, please go to the <button className='btu' onClick={() => {
                         window.location.href = '/input';
                     }}>
                         update
@@ -117,7 +117,7 @@ if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.match
                 </p>
                 <p className='text-secondary-p'>
                     If you have nothing to do you can go back home here 
-                    <button className='accent' onClick={() => {
+                    <button className='btu' onClick={() => {
                         window.location.href = '/Home';
                     }}>
                      Home
