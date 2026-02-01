@@ -4,51 +4,130 @@
 
 @layer base {
   :root {
-    --banner-bg: #f0f9ff;
-    --bg-start: #00008b;
-    --bg-end: #add8e6;
-    --glass-bg: rgba(255, 255, 255, 0.1);
-    --text-primary: #000000;
-    --text-secondary: #0f0101;
-    --accent-color: #faf9fc;
-    --title-color: #020202;
-  }
-
-  .dark {
-    --banner-bg: #1e3a8a;
+    /* Dark Mode (Default) - Deep Navy & Slate */
+    --banner-bg: #1e293b;
     --bg-start: #020617;
-    --bg-end: #1e3a8a;
-    --glass-bg: rgba(0, 0, 0, 0.3);
-    --text-primary: #ffffff;
-    --text-secondary: #d1d5db;
-    --accent-color: #6b6b6c;
-    --title-color: #f3f4f6;
+    --bg-end: #0f172a;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent: #f9f9f9;
+    --title-color: #ffffff;
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --logo: #c3eaf7;
+    --main-button: #334155;
+    --main-button-text: #f8fafc;
   }
+  
+  .light {
+    /* Light Mode - Clean Slate & White */
+    --banner-bg: #aaadaf;
+    --bg-start: #e1e0de;
+    --bg-end: #fffefe;
+    --glass-bg: rgba(15, 23, 42, 0.05);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --accent: #262728;
+    --title-color: #020617;
+    --card-bg: #ffffff;
+    --border-color: #d6d3d3;
+    --logo: #050505;
+    --main-button: #f4f6f8;
+    --main-button-text: #0f172a;
+  }
+  
 
   .home-container {
-    @apply min-h-screen w-full bg-gradient-to-t from-[var(--bg-start)] to-[var(--bg-end)];
+    @apply min-h-screen w-full bg-gradient-to-t from-[var(--bg-start)] to-[var(--bg-end)] animate-rollIn;
   }
 
   /* Header Styles */
   .header {
-    @apply bg-[var(--banner-bg)];
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
-    gap: 1rem;
-    width: 100vw;
+    
+       /* 1. w-full stops the horizontal scrolling (unlike 100vw)
+       2. md:px-8 md:py-4 handles the desktop padding without using @screen */
+   
+    @apply sticky top-0 z-50 w-full flex flex-row items-center justify-between 
+            bg-[var(--banner-bg)] backdrop-blur-md 
+            px-4 py-3 
+            md:px-8 md:py-4
+            border border-white/30 shadow-lg
+            rounded-2xl;
+  
+    /* Remove any manual 'width: 100vw' or 'padding' lines below this */
     margin: 0;
-    position: relative;
     left: 0;
     right: 0;
-    top: 0;
+  }
+  
+  
+
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+  }
+  
+  .futuristic-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--logo); 
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color 0.5s ease-in-out, text-shadow 0.5s ease-in-out;
+    letter-spacing: 4px;
+  }
+  
+  #letter-l {
+    font-size: 3rem;
+    display: inline-block;
+    opacity: 1;
+    max-width: 1.5ch; /* Allows the L to take up space */
+    transition: all 0.5s ease-in-out;
+    overflow: hidden;
+  }
+  
+  /* Hover Effect: Fades L and centers EARN */
+  .futuristic-logo:hover #letter-l {
+    opacity: 0;
+    max-width: 0;
+    margin-right: 0;
+  }
+  
+  .futuristic-logo:hover {
+    color: #FFD700; /* Switches to Neon Gold */
+    text-shadow: 0 0 20px rgba(255, 214, 0, 0.8), 0 0 40px rgba(255, 214, 0, 0.4);
+  }
+  
+  /* Optional: Permanent toggle class for JS trigger */
+  .earn-active #letter-l {
+    opacity: 0;
+    max-width: 0;
+  }
+  
+  .earn-active {
+    color: #FFD700 !important;
+    text-shadow: 0 0 20px rgba(255, 214, 0, 0.8);
+  }
+
+  .learn{
+    @apply text-4xl font-bold flex pr-0.5;
+    color: var(--title-color);
+    display: inline-block;
+    opacity: 1;
+    max-width: 1.2ch; /* Allows the L to take up space */
+    transition: all 1s ease-in-out;
+    overflow: hidden;
   }
 
   .logo {
-    @apply pl-4 text-2xl font-bold;
+    @apply text-xl font-bold flex justify-center items-center ;
     color: var(--title-color);
+    width: auto
   }
 
   .profile-wrapper {
@@ -75,15 +154,34 @@
   }
 
   .nav-btn {
-    @apply px-4 py-2 
-           rounded-md 
-           bg-blue-600 text-white 
-           hover:bg-blue-700 
-           transition;
+    @apply 
+    px-4 py-2 
+    bg-[var(--main-button)] 
+    text-[var(--main-button-text)]
+    rounded-md 
+    hover:bg-[#4782f0] 
+    transition;
   }
+  
 
   .create-btn {
-    @apply bg-green-600 hover:bg-green-700;
+    @apply 
+    hover:bg-[#059669] 
+    /* hover:shadow-[0_0_20px_rgba(57,255,20,0.8),0_0_40px_rgba(57,255,20,0.4)] */
+    px-4 py-2 
+    rounded-md 
+    bg-[var(--main-button)] 
+    text-[var(--main-button-text)]
+  }
+
+  .market-btn{
+    @apply 
+    px-4 py-2 
+    rounded-md 
+    hover:bg-[#dec640b2] 
+    transition
+    bg-[var(--main-button)] 
+    text-[var(--main-button-text)]
   }
 
   .profile-wrapper {
@@ -108,7 +206,7 @@
   }
 
   .deck-count {
-    @apply text-white;
+    @apply text-[var(--title-color)];
   }
 
   .cards-grid {

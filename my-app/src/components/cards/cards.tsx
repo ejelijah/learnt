@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import '../../css/gen.css';
+import '../../css/app.css';
 import '../../css/wel.css';
 import '../../css/cards.css';
-import { supabase } from '../../superbaseClient';
+import { supabase } from '../../../superbaseClient';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface Flashcard {
@@ -246,6 +246,21 @@ const Cards = () => {
   // Delete entire deck
   const handleDeleteDeck = async () => {
     if (!containerId || !isEditMode) return;
+
+    const { data: container, error: containerError } = await supabase
+      .from('flashcards_container')
+      .select('user_id')
+      .eq('id', containerId)
+      .single();
+
+    if (containerError) {
+      throw new Error(`Failed to fetch container: ${containerError.message}`);
+    }
+
+
+    const container_user = container?.user_id;
+
+    if(userId !== container_user) {alert("you can delete someone elses card"); return}
 
     const confirmDelete = window.confirm("Are you sure you want to delete this entire deck? This cannot be undone.");
     if (!confirmDelete) return;

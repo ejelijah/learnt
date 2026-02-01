@@ -1,8 +1,17 @@
+
 .welcome-container{
-    display: grid;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    @apply flex flex-col items-center justify-center text-center w-full p-8 gap-8 animate-fadeIn;
+
+
+}
+.welcome-container > h1, .welcome-container > h3{
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-weight: 600;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    line-height: 1.6;
+    color: var(--text-primary);
+    
 }
 
 .toggle{
@@ -25,19 +34,9 @@
     transform: scale(0.95);
 }
 
-h1{
-    color: black;
-    font-size: 50px;
-    margin-bottom: 10px;
-}
-h3{
-    color: black;
-    font-size: 20px;
-    margin-bottom: 20px;
-}
-
 .toggle:hover {
-    background-color: rgb(204, 204, 0);
+    color: #f2f3f4;
+    background-color:rgb(143, 143, 143);
     cursor: pointer;
 }
 
@@ -51,7 +50,8 @@ h3{
 
 }
 .submit:hover{
-    background-color:rgb(204, 204, 0);
+    color: #f2f3f4;
+    background-color:rgb(143, 143, 143);
     cursor: pointer;
 }
 .submit:active{

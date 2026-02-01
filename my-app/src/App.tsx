@@ -12,6 +12,7 @@ import Create from './components/trades/create';
 import Products from './components/trades/products';
 import ChatPage from './components/trades/ChatPage';
 import {Toaster} from 'sonner';
+import Slogan from './components/slogan';
 
 function App() {
   return (
@@ -28,10 +29,12 @@ function App() {
         <Route path = "/product" element=
 {<Products/>} />
 <Route path = "/chat/:conversationId" element={<ChatPage/>} />
+<Route path ="/slogan" element={<Slogan/>} />
         
       </Routes>
       <Toaster position="top-right" richColors />
     </Router>
+    
   );
 }
 

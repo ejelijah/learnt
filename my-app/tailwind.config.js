@@ -12,10 +12,17 @@ module.exports = {
         'text-primary': 'var(--text-primary)',
         'text-secondary': 'var(--text-secondary)',
         'accent': 'var(--accent)',
+        'logo': 'var(--logo)',
+        'title-color': 'var(--title-color)',
+        'card-bg':'var(--card-bg)',
+        'border-color':'var(--border-color)',
+        'main-button': 'var(--main-button)',
+        'main-button-text':'var(--main-button-text)'
+
       },
       keyframes: {
         rollIn: {
-          '0%': { transform: 'translateX(-100%)', opacity: '0' },
+          '0%': { transform: 'translateX(-50%)', opacity: '0' },
           '100%': { transform: 'translateX(0)', opacity: '1' },
         },
         fadeIn: {
@@ -25,7 +32,7 @@ module.exports = {
       },
       animation: {
         rollIn: 'rollIn 1s ease-in-out',
-        fadeIn: 'fadeIn 0.5s ease-in',
+        fadeIn: 'fadeIn 1s ease-in',
       },
     },
   },

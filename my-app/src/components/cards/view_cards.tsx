@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../superbaseClient';
+import { supabase } from '../../../superbaseClient';
 import Profile from '../../components/Profile';
-import '../../css/gen.css'; // You'll need to create this
+import '../../css/app.css'; // You'll need to create this
 
 interface Container {
   id: string;
@@ -145,26 +145,65 @@ const ViewCards = () => {
       <div className="home-container">
         {/* Header */}
   
-        <header className="header">
-  
-      
-  
-    {/* Top: profile left, title right */}
+            <header className="header">
+        
+            
+        
+            {/* Top: profile left, title right */}
+            <div className="logo-container">
+          <h1 className="futuristic-logo" id="main-logo">
+            <span id="letter-l">L</span>EARN
+          </h1>
+        </div>
+          <div>
+              {/* Center: search bar */}
+              <div className="header-center">
+              <input 
+                type="text"
+                placeholder="Search flashcard decks..."
+                className="search-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+          </div>
+        
+                        {/* Bottom: nav buttons */}
+              <nav className="nav-buttons">
+              <button className="nav-btn create-btn" onClick={() => navigate('/newitem')}>
+              Create New
+              </button>
+            
+              <button className="market-btn"
+              onClick={() => {
+                navigate('/create');
+              }}>Sell/Buy</button>
+              </nav>
+            </div>
+        
+          <div className="profile-wrapper" onClick={() => navigate('/user')}>
+              <Profile />
+            </div>
+              </header>
 
-  
-      <h1 className="logo">lear</h1>
-  
-    <div className="profile-wrapper" onClick={() => navigate('/user')}>
-        <Profile />
-      </div>
-        </header>
-
-        <button
-      className=" flex justify-end items-end text-2xl font-bold bg-gray-800 text-white hover:bg-red-500 transition-colors duration-300 px-2 py-1 rounded-md margin-top-4"
-      onClick={() => navigate("/Home")}
-    >
-      Back
-    </button>
+        <button 
+              onClick={() => navigate(-1)}
+              className="fixed top-6 left-6 z-50 p-2  backdrop-blur-sm border border-gray-200 shadow-sm hover:bg-gray-800 rounded-full transition-all flex items-center justify-center active:scale-95"
+              aria-label="Go back"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path d="m15 18-6-6 6-6"/>
+              </svg>
+            </button>
   
         {/* Main Content - Card Grid */}
         {!showStudyMode && !showOptions && (

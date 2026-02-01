@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/Inputfield.css';
-import '../css/gen.css';
-import '../css/wel.css';
-import { supabase } from '../superbaseClient';
+import '../css/app.css';
+import { supabase } from '../../superbaseClient';
 
 interface UserProfile {
   user_id: string;
@@ -137,6 +136,12 @@ const InputField: React.FC<InputFieldProps> = ({ onFileSelect }) => {
     }
   };
 
+  if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+    document.documentElement.classList.add('light')
+  } else {
+    document.documentElement.classList.remove('light')
+  }
+  
   React.useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -155,7 +160,7 @@ const InputField: React.FC<InputFieldProps> = ({ onFileSelect }) => {
       </button>
       <div className='container'>
    
-        <p>enter your name here</p>
+        <p className='text-primary'>enter your name here</p>
         <input
           type="text"
           placeholder="Enter text here"
@@ -164,7 +169,7 @@ const InputField: React.FC<InputFieldProps> = ({ onFileSelect }) => {
           onChange={e => setName(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-        <p>the name of your school here</p>
+        <p className='text-primary'>the name of your school here</p>
         <input
           type="text"
           placeholder="Enter text here"
@@ -173,7 +178,7 @@ const InputField: React.FC<InputFieldProps> = ({ onFileSelect }) => {
           onChange={e => setSchool(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-        <p>Upload your profile picture (optional)</p>
+        <p className='text-primary'>Upload your profile picture (optional)</p>
         <input
           type="file"
           accept="image/*"

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from './superbaseClient';
+import { supabase } from '../superbaseClient';
 import Profile from './components/Profile';
 import './css/Home.css' // You'll need to create this
+import Slogan from './components/slogan';
+import { useLocation } from 'react-router-dom';
 
 interface Container {
   id: string;
@@ -21,7 +23,9 @@ interface Flashcard {
   created_at: string;
 }
 
-const Home = () => {
+const Home: React.FC  = () => {
+  const location = useLocation();
+  const [isEntryPhase, setIsEntryPhase] = useState(location.state?.fromWelcome || false);
   const navigate = useNavigate();
   const [containers, setContainers] = useState<Container[]>([]);
   const [filteredContainers, setFilteredContainers] = useState<Container[]>([]);
@@ -38,9 +42,24 @@ const Home = () => {
   const [failedCards, setFailedCards] = useState<Flashcard[]>([]);
   const [studyComplete, setStudyComplete] = useState(false);
 
-  useEffect(() => {
-    fetchContainers();
-  }, []);
+  const fetchContainers = async () => {
+  try{
+
+      const { data } = await supabase
+        .from('flashcards_container')
+        .select('*')
+        .eq('is_public', true)
+        .order('created_at', { ascending: false });
+      
+      if (data) {
+        setContainers(data);
+        setFilteredContainers(data);
+      }
+    }
+  catch(error){
+    console.error('Error fetching containers:', error);
+  }
+};
 
   useEffect(() => {
     // Filter containers based on search query
@@ -54,18 +73,30 @@ const Home = () => {
     }
   }, [searchQuery, containers]);
 
-  const fetchContainers = async () => {
-    const { data } = await supabase
-      .from('flashcards_container')
-      .select('*')
-      .eq('is_public', true)
-      .order('created_at', { ascending: false });
-    
-    if (data) {
-      setContainers(data);
-      setFilteredContainers(data);
+
+  useEffect(() => {
+    if (location.state?.fromWelcome) {
+    // This timer controls how long the "Learn to Earn" animation stays on screen
+    const timer = setTimeout(() => {
+      setIsEntryPhase(false);
+    }, 5500); // 3.5 seconds total
+
+    return () => clearTimeout(timer);
+  }
+  }, [location.state]);
+  
+
+  useEffect(() => {
+    fetchContainers();
+  }, []);
+
+
+
+    // If we are in the entry phase, show the Slogan animation
+    if (isEntryPhase) {
+      return <Slogan />;
     }
-  };
+
 
   const fetchFlashcards = async (containerId: string) => {
     const { data } = await supabase
@@ -140,12 +171,12 @@ const Home = () => {
   };
 
 
-  if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark')
+  if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+    document.documentElement.classList.add('light')
   } else {
-    document.documentElement.classList.remove('dark')
+    document.documentElement.classList.remove('light')
   }
-  
+
 
   return (
     <div className="home-container">
@@ -155,10 +186,12 @@ const Home = () => {
 
     
 
-  {/* Top: profile left, title right */}
-
-    <h1 className="logo">lear</h1>
-
+    {/* Top: profile left, title right */}
+    <div className="logo-container">
+  <h1 className="futuristic-logo" id="main-logo">
+    <span id="letter-l">L</span>EARN
+  </h1>
+</div>
   <div>
       {/* Center: search bar */}
       <div className="header-center">
@@ -169,17 +202,17 @@ const Home = () => {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-      </div>
+  </div>
 
                 {/* Bottom: nav buttons */}
       <nav className="nav-buttons">
-      <button className="nav-btn create-btn" onClick={() => navigate('/newitem')}>
+      <button className="create-btn" onClick={() => navigate('/newitem')}>
       Create New
       </button>
       <button className="nav-btn" onClick={() => navigate('/view_cards')}>
       Library
       </button>
-      <button className="nav-btn"
+      <button className="market-btn "
       onClick={() => {
         navigate('/create');
       }}>Sell/Buy</button>

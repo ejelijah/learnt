@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../superbaseClient';
-import '../css/gen.css';
+import { supabase } from '../../superbaseClient';
+import '../css/app.css';
 // import profileImg from '../assets/demo-profile.png';
 import { Link } from 'react-router-dom';
-
 
 
 
@@ -69,20 +68,20 @@ const User = () => {
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
     // On page load or in a useEffect
-if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark')
+if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+    document.documentElement.classList.add('light')
   } else {
-    document.documentElement.classList.remove('dark')
+    document.documentElement.classList.remove('light')
   }
   
   // To change the theme
   const toggleTheme = () => {
-    if (document.documentElement.classList.contains('dark')) {
-      document.documentElement.classList.remove('dark')
-      localStorage.theme = 'light'
-    } else {
-      document.documentElement.classList.add('dark')
+    if (document.documentElement.classList.contains('light')) {
+      document.documentElement.classList.remove('light')
       localStorage.theme = 'dark'
+    } else {
+      document.documentElement.classList.add('light')
+      localStorage.theme = 'light'
     }
   }
   

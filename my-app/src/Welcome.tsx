@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import './css/gen.css';
+import './css/app.css';
 import './css/wel.css';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from './superbaseClient';
+import { supabase } from '../superbaseClient';
 
 
 const Welcome = () => {
@@ -14,6 +14,10 @@ const Welcome = () => {
   const validateEmail = (email: string) => {
     // Simple email regex
     return /\S+@\S+\.\S+/.test(email);
+  };
+  const handleGetStarted = () => {
+    // Pass 'fromWelcome' state to the Home route
+    navigate('/Home', { state: { fromWelcome: true } });
   };
   const use_handleSubmit = async () => {
     if (!validateEmail(email)) {
@@ -36,7 +40,7 @@ const Welcome = () => {
         }
         return;
       }
-      navigate('/Home'); // Redirect to Home after successful login
+    handleGetStarted();
     } else {
       // Signup flow for new users (Supabase)
       const {error: signUpError } = await supabase.auth.signUp({ email, password });
@@ -63,6 +67,7 @@ const Welcome = () => {
         return;
       }
       navigate('/input');
+      handleGetStarted();
     }
   };
 
@@ -102,6 +107,7 @@ const Welcome = () => {
           <button
             className="submit"
             onClick={use_handleSubmit}
+            
           >
             {isLogin ? 'Login' : 'Sign Up'}
           </button>

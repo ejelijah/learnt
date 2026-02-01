@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../superbaseClient';
-import '../css/gen.css';
+import { supabase } from '../../superbaseClient';
+import '../css/app.css';
 import '../css/wel.css';
 
 const NewItem = () => {

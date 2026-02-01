@@ -1,5 +1,5 @@
-import './profile.css';
-import { supabase } from '../superbaseClient'; 
+import '../css/profile.css';
+import { supabase } from '../../superbaseClient'; 
 import React, { useEffect, useState } from 'react';
 
 const Profile = () => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '../../superbaseClient'; // Adjust path as needed
-import '../../css/gen.css';
+import { supabase } from '../../../superbaseClient'; // Adjust path as needed
+import '../../css/app.css';
 import {toast} from 'sonner';
 
 const ChatPage = () => {

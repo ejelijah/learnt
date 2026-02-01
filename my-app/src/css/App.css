@@ -1,11 +1,96 @@
-body{
-    background-color: white;
-    font-family: Arial, sans-serif;
-    color: #333;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Dark Mode (Default) - Deep Navy & Slate */
+    --banner-bg: #1e293b;
+    --bg-start: #020617;
+    --bg-end: #0f172a;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent: #f9f9f9;
+    --title-color: #ffffff;
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --logo: #c3eaf7;
+    --main-button: #334155;
+    --main-button-text: #f8fafc;
+  }
+  
+  .light {
+    /* Light Mode - Clean Slate & White */
+    --banner-bg: #aaadaf;
+    --bg-start: #e1e0de;
+    --bg-end: #fffefe;
+    --glass-bg: rgba(15, 23, 42, 0.05);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --accent: #262728;
+    --title-color: #020617;
+    --card-bg: #ffffff;
+    --border-color: #d6d3d3;
+    --logo: #050505;
+    --main-button: #f4f6f8;
+    --main-button-text: #0f172a;
+  }
+
+
+   body {
+    @apply min-h-screen w-full font-sans antialiased transition-colors duration-500 flex items-center justify-center bg-gradient-to-t from-bg-start to-bg-end animate-fadeIn  flex-col text-center ;
+    color: var(--text-color);
     margin: 0;
-    padding: 20px;
-    display: flex;
-    height: 100vh;
+    padding: 0;
+    overflow-x: hidden; 
+    
+    
+    /* Mobile-first: Small padding and gap */
+    padding: 1.5rem;
+    gap: 1.5rem;
+    min-height: 100dvh; /* 'dvh' handles mobile browser bars better than 'vh' */
+
+    /* Desktop: Larger padding and gap */
+    @screen md {
+        padding: 4rem;
+        gap: 2.5rem;
+    }
+  }
+
+ 
+  @layer components {
+    .container {
+        @apply backdrop-blur-lg border border-white/30 rounded-xl shadow-lg p-6 max-w-md w-full px-10 mx-auto;
+    }
+
+    .btu {
+      size: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    padding-left: 0.25rem;
+    color:var(--accent);
+  }
+  }
+
+
+.text-primary {
+  color: var(--text-primary);
+  padding: 2rem;
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-secondary-p {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
 }
 
 

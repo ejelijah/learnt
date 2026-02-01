@@ -2,15 +2,12 @@
   "name": "start_up",
   "version": "1.0.0",
   "private": true,
- "scripts": {
-  "build": "npm run build:my-app && npm run build:backend",
-  "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix my-app\"",
-  "start:backend": "npm start --prefix backend",
-  "start:frontend": "npm start --prefix my-app",
-  "build:backend": "npm run build --prefix backend",
-  "build:frontend": "npm run build --prefix my-app"
-}
-,
+  "scripts": {
+    "start": "concurrently \"npm start --prefix backend\" \"npm run dev --prefix my-app\"",
+    "dev": "concurrently \"npm start --prefix backend\" \"npm run dev --prefix my-app\"",
+    "backend": "npm start --prefix backend",
+    "frontend": "npm run dev --prefix my-app"
+  },
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
