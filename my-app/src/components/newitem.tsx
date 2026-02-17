@@ -118,7 +118,7 @@ const NewItem = () => {
                 make cards manually
             </button>
             <div>
-                <label className='text-white size-lg p-4 '>Handwritten Notes:</label>
+                <label className='text-white size-lg p-4 text-secondary-p '>Handwritten Notes:</label>
                 <textarea
                     value={notes}
                     onChange={e => setNotes(e.target.value)}
@@ -127,21 +127,21 @@ const NewItem = () => {
                     style={{ width: '100%' }}
                 />
             </div>
-            <div className='text-white size-lg'>
+            <div className='text-white size-lg text-secondary-p '>
                 <label >Or upload a file (PDF, DOC):</label>
                 <input
                     type="file"
                     accept=".pdf,.pptx,.docx"
                     onChange={handleFileChange}
                 />
-                {file && <div className='text-white size-md p-4 '>{
+                {file && <div className='text-white size-md p-4 text-secondary-p '>{
                 } Selected file: {file.name}
                     </div>
                     }
             </div>
             <div>
                 <label className='m-2 text-white 
-                p-4 size-lg'>
+                p-4 size-lg' text-secondary-p >
                     <input
 
                         type="checkbox"
