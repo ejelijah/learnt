@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Welcome from './Welcome';
 import InputField from './components/InputField';
-import './css/App.css';
+import './css/app.css';
 import Home from './Home';
 import NewItem from './components/newitem';
 import User from './components/user';
