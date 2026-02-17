@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "dev": "react-scripts start",
   "name": "my-app",
   "version": "0.1.0",
