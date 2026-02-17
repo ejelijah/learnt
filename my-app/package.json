@@ -10,7 +10,6 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.126",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
     "firebase": "^11.8.1",
@@ -53,6 +52,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^22.19.11",
     "@vitejs/plugin-react": "^5.1.2",
     "vite": "^7.3.1"
   }
