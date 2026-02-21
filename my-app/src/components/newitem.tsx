@@ -102,14 +102,13 @@ const NewItem = () => {
 
     return (
         <div>
-        <div className="text-white px-4 py-2 flex items-end justify-end">
-        <button
-          className=" flex justify-end items-end text-2xl font-bold bg-gray-800 text-white hover:bg-red-500 transition-colors duration-300 px-2 py-1 rounded-md"
-          onClick={() => navigate("/Home")}
-        >
-          Back
-        </button>
-      </div>
+        <button 
+        onClick={() => navigate(-1)}
+        className="fixed top-6 left-6 z-40 p-2 backdrop-blur-sm border border-gray-200 shadow-sm hover:bg-gray-100 rounded-full transition-all flex items-center justify-center active:scale-95 bg-white/80"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+        
       
         <form onSubmit={handleSubmit} className="newitem-form">
             <button type="button" onClick={() => navigate('/cards')} style={{ marginBottom: '10px',
@@ -140,20 +139,20 @@ const NewItem = () => {
                     }
             </div>
             <div>
-                <label className='m-2 
-                p-4 size-lg' text-secondary-p >
-                    <input
+            <label className='m-2 p-4 size-lg text-secondary-p'>
+    <input
+        className='text-gray-200 dark:text-gray-800'
+        type="checkbox"
+        checked={isPublic}
+        onChange={e => setIsPublic(e.target.checked)}
+    />
+    Make this note public
+</label>
 
-                        type="checkbox"
-                        checked={isPublic}
-                        onChange={e => setIsPublic(e.target.checked)}
-                    />
-                    Make this note public
-                </label>
             </div>
             <button type="submit" className="submit">Submit</button>
         </form>
-    </div>
+    </div>  
     );
 };
 

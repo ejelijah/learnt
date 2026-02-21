@@ -11,17 +11,24 @@ const Welcome = () => {
   const [error, setError] = useState('');
   const [isLogin, setIsLogin] = useState(false);
   const navigate = useNavigate();
+
+
   const validateEmail = (email: string) => {
     // Simple email regex
-    return /\S+@\S+\.\S+/.test(email);
+    return /^[a-zA-Z0-9._%+-]+@dal\.ca$/.test(email);
   };
   const handleGetStarted = () => {
-    // Pass 'fromWelcome' state to the Home route
-    navigate('/Home', { state: { fromWelcome: true } });
+    // Replace 'isLoggedIn' with your actual auth check (e.g., a state variable or localStorage check)
+    if (isLogin) {
+      navigate('/Home', { state: { fromWelcome: true } });
+    } else {
+      navigate('/Input', { state: { fromWelcome: true } });
+    }
   };
   const use_handleSubmit = async () => {
     if (!validateEmail(email)) {
       setError('Please enter a valid email.');
+      alert('sorry only dal emails are allowed');
       return;
     }
     if (password.length < 6) {

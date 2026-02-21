@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/Inputfield.css';
 import '../css/app.css';
 import { supabase } from '../../superbaseClient';
+import Slogan from '../components/slogan';
+import { useLocation } from 'react-router-dom';
 
 interface UserProfile {
   user_id: string;
@@ -16,6 +18,8 @@ interface InputFieldProps {
 }
 
 const InputField: React.FC<InputFieldProps> = ({ onFileSelect }) => {
+  const location = useLocation();
+  const [isEntryPhase, setIsEntryPhase] = useState(location.state?.fromWelcome || false);
   const [name, setName] = useState('');
   const [school, setSchool] = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -136,11 +140,17 @@ const InputField: React.FC<InputFieldProps> = ({ onFileSelect }) => {
     }
   };
 
-  if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-    document.documentElement.classList.add('light')
-  } else {
-    document.documentElement.classList.remove('light')
-  }
+    useEffect(() => {
+      if (location.state?.fromWelcome) {
+      // This timer controls how long the "Learn to Earn" animation stays on screen
+      const timer = setTimeout(() => {
+        setIsEntryPhase(false);
+      }, 5500); // 3.5 seconds total
+  
+      return () => clearTimeout(timer);
+    }
+    }, [location.state]);
+
   
   React.useEffect(() => {
     return () => {
@@ -150,9 +160,20 @@ const InputField: React.FC<InputFieldProps> = ({ onFileSelect }) => {
     };
   }, [previewUrl]);
 
+  if (isEntryPhase) {
+    return <Slogan />;
+  }
+
+
+  if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+    document.documentElement.classList.add('light')
+  } else {
+    document.documentElement.classList.remove('light')
+  }
+
   return (
     <>
-       <button 
+      <button 
         onClick={() => navigate(-1)}
         className="fixed top-6 left-6 z-40 p-2 backdrop-blur-sm border border-gray-200 shadow-sm hover:bg-gray-100 rounded-full transition-all flex items-center justify-center active:scale-95 bg-white/80"
       >
@@ -183,7 +204,7 @@ const InputField: React.FC<InputFieldProps> = ({ onFileSelect }) => {
           type="file"
           accept="image/*"
           onChange={handleImageChange}
-          className="inputField"
+          className="inputField text-sm text-secondary"
         />
         {previewUrl && (
           <div style={{ marginTop: '10px' }}>

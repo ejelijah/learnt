@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+ @layer base {
   :root {
-    /* Dark Mode (Default) - Deep Navy & Slate */
     --banner-bg: #1e293b;
     --bg-start: #020617;
     --bg-end: #0f172a;
@@ -21,7 +20,7 @@
   }
   
   .light {
-    /* Light Mode - Clean Slate & White */
+
     --banner-bg: #aaadaf;
     --bg-start: #e1e0de;
     --bg-end: #fffefe;
@@ -36,29 +35,43 @@
     --main-button: #f4f6f8;
     --main-button-text: #0f172a;
   }
-  
+  @media (max-width: 500px) {
 
-  .home-container {
-    @apply min-h-screen w-full bg-gradient-to-t from-[var(--bg-start)] to-[var(--bg-end)] animate-rollIn;
+    .search-input {
+      @apply w-full max-w-none;
+    }
+    .nav-buttons button {
+      @apply p-0.5 text-xs leading-none;
+    }
+    .header {
+      @apply px-2 py-2;
+    
+    .futuristic-logo {
+      @apply text-xs tracking-[1px];
+      #letter-l {
+        @apply text-2xl;
+      }
+    }
   }
 
-  /* Header Styles */
+  }
+  
+  html, body {
+    @apply overflow-x-hidden m-0 p-0;
+
+  }
+
+  .home-container {
+    @apply min-h-screen bg-gradient-to-t from-[var(--bg-start)] to-[var(--bg-end)] animate-rollIn;
+  }
+
   .header {
-    
-       /* 1. w-full stops the horizontal scrolling (unlike 100vw)
-       2. md:px-8 md:py-4 handles the desktop padding without using @screen */
-   
-    @apply sticky top-0 z-50 w-full flex flex-row items-center justify-between 
-            bg-[var(--banner-bg)] backdrop-blur-md 
+    @apply sticky top-0 z-50 flex flex-row items-center justify-between 
+    bg-[var(--banner-bg)] backdrop-blur-md 
             px-4 py-3 
             md:px-8 md:py-4
             border border-white/30 shadow-lg
-            rounded-2xl;
-  
-    /* Remove any manual 'width: 100vw' or 'padding' lines below this */
-    margin: 0;
-    left: 0;
-    right: 0;
+            rounded-2xl box-border;
   }
   
   
@@ -70,48 +83,40 @@
     background: transparent;
   }
   
-  .futuristic-logo {
+  .futuristic-logo{
     font-family: 'Orbitron', sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--logo); 
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: color 0.5s ease-in-out, text-shadow 0.5s ease-in-out;
-    letter-spacing: 4px;
-  }
+    @apply 
+    text-3xl 
+    font-bold 
+    flex 
+    items-center 
+    cursor-pointer 
+    tracking-[4px] 
+    transition-all duration-500;
+    color: var(--logo);
+    }
   
   #letter-l {
-    font-size: 3rem;
-    display: inline-block;
-    opacity: 1;
-    max-width: 1.5ch; /* Allows the L to take up space */
-    transition: all 0.5s ease-in-out;
-    overflow: hidden;
+    @apply inline-block opacity-100 max-w-[1.5ch] transition-all duration-500 overflow-hidden text-5xl;
   }
   
-  /* Hover Effect: Fades L and centers EARN */
+
+  @media (hover: hover) {
+    .futuristic-logo:hover #letter-l {
+      @apply opacity-0 max-w-0 mr-0;
+    }
+    
+    .futuristic-logo:hover {
+      color: #FFD700;
+      text-shadow: 0 0 20px rgba(255, 214, 0, 0.8), 0 0 40px rgba(255, 214, 0, 0.4);
+    }
+
+    
   .futuristic-logo:hover #letter-l {
     opacity: 0;
     max-width: 0;
     margin-right: 0;
   }
-  
-  .futuristic-logo:hover {
-    color: #FFD700; /* Switches to Neon Gold */
-    text-shadow: 0 0 20px rgba(255, 214, 0, 0.8), 0 0 40px rgba(255, 214, 0, 0.4);
-  }
-  
-  /* Optional: Permanent toggle class for JS trigger */
-  .earn-active #letter-l {
-    opacity: 0;
-    max-width: 0;
-  }
-  
-  .earn-active {
-    color: #FFD700 !important;
-    text-shadow: 0 0 20px rgba(255, 214, 0, 0.8);
   }
 
   .learn{
@@ -119,7 +124,7 @@
     color: var(--title-color);
     display: inline-block;
     opacity: 1;
-    max-width: 1.2ch; /* Allows the L to take up space */
+    max-width: 1.2ch; 
     transition: all 1s ease-in-out;
     overflow: hidden;
   }
@@ -145,7 +150,7 @@
            focus:outline-none focus:ring-2 focus:ring-blue-500;
   }
 
-  /* Nav buttons */
+
   .nav-buttons {
     @apply flex justify-center gap-4
            px-2 py-3 border-t border-slate-200 dark:border-slate-700
@@ -167,7 +172,6 @@
   .create-btn {
     @apply 
     hover:bg-[#059669] 
-    /* hover:shadow-[0_0_20px_rgba(57,255,20,0.8),0_0_40px_rgba(57,255,20,0.4)] */
     px-4 py-2 
     rounded-md 
     bg-[var(--main-button)] 
@@ -259,7 +263,7 @@
     @apply text-black text-xs;
   }
 
-  /* Empty State */
+
   .empty-state {
     @apply text-center py-20;
   }
@@ -276,7 +280,7 @@
     @apply px-8 py-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all text-lg font-medium;
   }
 
-  /* Options Modal */
+
   .modal-overlay {
     @apply fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50;
   }
@@ -321,7 +325,7 @@
     @apply border-blue-500 bg-blue-50;
   }
 
-  /* Study Mode */
+
   .study-mode-overlay {
     @apply fixed inset-0 bg-black bg-opacity-95 flex items-center justify-center z-50;
   }
@@ -398,7 +402,7 @@
     @apply bg-green-500 hover:bg-green-600;
   }
 
-  /* Complete Modal */
+
   .complete-modal {
     @apply bg-white rounded-2xl p-10 max-w-3xl w-11/12 max-h-[80vh] overflow-y-auto;
   }
@@ -478,5 +482,6 @@
   .home-btn {
     @apply bg-gray-600 hover:bg-gray-700;
   }
-}
+} 
+
 

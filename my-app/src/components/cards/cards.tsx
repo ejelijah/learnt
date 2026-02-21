@@ -294,7 +294,7 @@ const Cards = () => {
     }
   };
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen text-white">Loading flashcards...</div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen text-primary">Loading flashcards...</div>;
   
   if (error) return (
     <div className="flex flex-col items-center justify-center min-h-screen text-red-500 px-4">
@@ -326,7 +326,7 @@ const Cards = () => {
   </div> */}
   <button 
               onClick={() => navigate(-1)}
-              className="fixed top-6 left-6 z-50 p-2  backdrop-blur-sm border border-gray-200 shadow-sm hover:bg-gray-800 rounded-full transition-all flex items-center justify-center active:scale-95"
+              className="fixed top-6 left-6 z-50 p-2  backdrop-blur-sm border border-gray-200 shadow-sm hover:bg-gray-800 rounded-full transition-all flex items-center justify-center active:scale-95 text-secondary "
               aria-label="Go back"
             >
               <svg 
@@ -348,10 +348,10 @@ const Cards = () => {
   <div className="gen">
 
     <div className="w-full max-w-3xl mx-auto  bg-opacity-10 backdrop-blur-lg rounded-lg p-6 shadow-lg">
-      <h2 className="text-3xl font-bold mb-2 text-center">
+      <h2 className="text-3xl font-bold mb-2 text-center text-secondary">
         {isEditMode ? "Edit Deck" : "Create New Deck"}
       </h2>
-      <p className="text-white-400 mb-6 text-center">
+      <p className="mb-6 text-center text-secondary">
         Click on the card to flip between question and answer.
       </p>
 
@@ -395,7 +395,7 @@ const Cards = () => {
           </div>
         </div>
       ) : (
-        <p className="text-white-400 mb-8 text-center">
+        <p className="mb-8 text-center text-secondary">
           No flashcards yet — create your first one below 👇{" "}
         </p>
       )}
@@ -409,7 +409,7 @@ const Cards = () => {
       />
 
       <div className="mt-8 mb-6">
-        <h3 className="text-xl font-semibold mb-4 text-center">
+        <h3 className="text-xl font-semibold mb-4 text-center text-secondary">
           Create a new flashcard
         </h3>
 
@@ -464,18 +464,15 @@ const Cards = () => {
         )}
       </div>
 
-      <label className="flex items-center justify-center gap-2 text-white-300 cursor-pointer simple-hover">
-        <input
-          type="checkbox"
-          checked={isPublic}
-          onChange={(e) => {setIsPublic(e.target.checked)
-            console.log('🌐 Public toggle:', e.target.checked);
-          }}
-          className="w-4 h-4 accent-blue-600"
-
-        />
-        Make this deck public
-      </label>
+      <label className='m-2 p-4 size-lg text-secondary-p'>
+    <input
+        className='text-gray-200 dark:text-gray-800'
+        type="checkbox"
+        checked={isPublic}
+        onChange={e => setIsPublic(e.target.checked)}
+    />
+    Make this note public
+</label>
     </div>
   </div>
 

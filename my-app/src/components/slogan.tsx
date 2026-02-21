@@ -67,7 +67,7 @@ const Slogan: React.FC = () => {
           }
 
           /* 2. THE MOVEMENT: All transitions set to 2 seconds */
-          .futuristic-logo {
+          .futuristic-logo-h {
             font-family: 'Orbitron', sans-serif;
             font-size: clamp(2.5rem, 10vw, 6rem);
             font-weight: 700;
@@ -99,7 +99,7 @@ const Slogan: React.FC = () => {
           }
 
           /* ACTIVE STATE: Triggered after 3.5 seconds */
-          .active-earn .futuristic-logo {
+          .active-earn .futuristic-logo-h {
             color: #FFD700; /* Final Gold */
             text-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
             transform: scale(1.05);
@@ -128,7 +128,7 @@ const Slogan: React.FC = () => {
           {isEarnMode ? "and" : "to where you can "}
         </p>
 
-        <h1 className="futuristic-logo">
+        <h1 className="futuristic-logo-h">
           <span className="letter-l">L</span>EARN
         </h1>
       </div>

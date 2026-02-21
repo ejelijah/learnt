@@ -10,7 +10,7 @@
     --bg-end: #0f172a;
     --glass-bg: rgba(255, 255, 255, 0.05);
     --text-primary: #f8fafc;
-    --text-secondary: #d4e5fc;
+    --text-secondary: #f9f9f9;
     --accent: #f9f9f9;
     --title-color: #ffffff;
     --card-bg: #1e293b;
@@ -27,7 +27,7 @@
     --bg-end: #fffefe;
     --glass-bg: rgba(15, 23, 42, 0.05);
     --text-primary: #0f172a;
-    --text-secondary: #262d38;
+    --text-secondary: #000000;
     --accent: #262728;
     --title-color: #020617;
     --card-bg: #ffffff;
@@ -37,8 +37,14 @@
     --main-button-text: #0f172a;
   }
 
+  @layer base {
+    html, body {
+      @apply overflow-x-hidden w-full;
+      width: 100%;
+    }
+  }
 
-   body {
+  body {
     @apply min-h-screen w-full font-sans antialiased transition-colors duration-500 flex items-center justify-center bg-gradient-to-t from-bg-start to-bg-end animate-fadeIn  flex-col text-center ;
     color: var(--text-color);
     margin: 0;
@@ -49,10 +55,10 @@
     /* Mobile-first: Small padding and gap */
     padding: 1.5rem;
     gap: 1.5rem;
-    min-height: 100dvh; /* 'dvh' handles mobile browser bars better than 'vh' */
 
     /* Desktop: Larger padding and gap */
     @screen md {
+
         padding: 4rem;
         gap: 2.5rem;
     }

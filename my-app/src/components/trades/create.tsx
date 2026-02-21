@@ -100,6 +100,11 @@ const Create = () => {
     } catch (err) {
       console.error("Chat error:", err);
     }
+
+    document.getElementById('payment')?.addEventListener('click', () => {
+      alert("we appreciate that you are considering to make a purchase, but the payment system is currently under development. Please check back later!");
+    });
+    
   };
   
 
@@ -286,6 +291,7 @@ const Create = () => {
                 </button>
                 <button 
                   onClick={() => console.log("Processing payment for:", selectedProduct.id)}
+                  id='payment'
                   className="py-4 px-6 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-95"
                 >
                   Pay Now

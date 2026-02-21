@@ -2,6 +2,9 @@
 module.exports = {
   darkMode: 'selector',
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  future:{
+hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
       colors: {

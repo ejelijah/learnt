@@ -64,7 +64,7 @@ const User = () => {
         fetchProfile();
     }, []); // Empty dependency array - run once on mount
 
-    if (loading) return <div>Loading profile...</div>;
+    if (loading) return <div className='text-text-primary'>Loading profile...</div>;
     if (error) return <div style={{ color: 'red' }}>{error}</div>;
 
     // On page load or in a useEffect
@@ -130,6 +130,30 @@ if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matc
     >     
       Toggle Mode
     </button>
+
+    <button
+  id='delete'
+  onClick={async () => {
+    if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+      // 1. Call the custom function we created in Step 1
+      const { error } = await supabase.rpc('delete_user');
+
+      if (error) {
+        console.error('Error deleting user:', error.message);
+        alert('Failed to delete account. Please try again.');
+      } else {
+        // 2. Sign the user out locally
+        await supabase.auth.signOut();
+        alert('Account deleted successfully.');
+        window.location.href = '/';
+      }
+    }
+  }}
+  className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+>
+  Delete Account
+</button>
+
         </div>
     );
 };
