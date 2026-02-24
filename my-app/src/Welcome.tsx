@@ -18,13 +18,25 @@ const Welcome = () => {
     return /^[a-zA-Z0-9._%+-]+@dal\.ca$/.test(email);
   };
   const handleGetStarted = () => {
-    // Replace 'isLoggedIn' with your actual auth check (e.g., a state variable or localStorage check)
+    // Check if the user has already triggered the start sequence
+    const hasStarted = localStorage.getItem('app_started');
+  
+    // Set animation to true only if the flag doesn't exist yet
+    const shouldAnimate = !hasStarted;
+  
+    if (shouldAnimate) {
+      // Save the flag so fromWelcome is false next time they visit this page
+      localStorage.setItem('app_started', 'true');
+    }
+  
     if (isLogin) {
-      navigate('/Home', { state: { fromWelcome: true } });
+      navigate('/Home', { state: { fromWelcome: shouldAnimate } });
     } else {
-      navigate('/Input', { state: { fromWelcome: true } });
+      navigate('/Input', { state: { fromWelcome: shouldAnimate } });
     }
   };
+  
+
   const use_handleSubmit = async () => {
     if (!validateEmail(email)) {
       setError('Please enter a valid email.');

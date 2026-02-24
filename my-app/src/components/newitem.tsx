@@ -42,7 +42,7 @@ const NewItem = () => {
         if (token) headers['Authorization'] = `Bearer ${token}`;
         console.log(formData);
 
-        const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/upload`, {
+        const response = await fetch('/api/upload', {
             method: 'POST',
             body: formData,
             headers,

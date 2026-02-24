@@ -21,7 +21,11 @@ const app = express();
 // Validate required environment variables
 
 // Configure CORS for specific origins
-const allowedOrigins = ['*']; // Allow all origins for development; replace with specific URLs in production
+const allowedOrigins = [
+  'https://sensational-mooncake-205e97.netlify.app',
+  'http://localhost:5173', 
+  'http://localhost:3000'
+]; // Allow all origins for development; replace with specific URLs in production
 
 app.use(cors({
   origin: function (origin, callback) {
