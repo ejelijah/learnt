@@ -95,7 +95,7 @@ async function authenticate(req, res, next) {
     req.user = user;
     next();
   } catch (err) {
-    console.error('Authentication middleware error:', err);
+    console.error('Authentication middleware error:', err.message);
     res.status(500).json({ error: 'Internal server error' });
   }
 }
