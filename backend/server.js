@@ -231,6 +231,10 @@ app.post('/api/upload', authenticate, upload.single('file'), async (req, res) =>
         .single();
 
       if (container_error) throw container_error;
+      if (container_error){
+        console.error(container_error.message
+        );        return res.status(500).json({ error: 'Failed to create flashcard container' });
+      }
       
       const { error: insertError } = await supabase
         .from('flashcards')
