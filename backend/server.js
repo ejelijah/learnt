@@ -22,8 +22,8 @@ const app = express();
 
 // Configure CORS for specific origins
 const allowedOrigins = [
-  'http://localhost:3000', // For local development
-  'https://sensational-mooncake-205e97.netlify.app' // Your Netlify production URL
+    'https://sensational-mooncake-205e97.netlify.app',// Your Netlify production URL
+  'http://localhost:3000' // For local development 
 ];
 
 app.use(cors({
