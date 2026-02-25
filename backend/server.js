@@ -11,6 +11,7 @@ import { createRequire } from "module";
 import extractTextFromPDF from './test.js';
 import OpenAI from 'openai';
 import Groq  from 'groq-sdk';
+import { createClient } from '@supabase/supabase-js';
 
 const require = createRequire(import.meta.url);
 
@@ -41,6 +42,10 @@ app.use(cors({
   credentials: true // Allow cookies to be sent
 }));
 
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
+);
 
 
 const openai = new OpenAI({
@@ -63,35 +68,29 @@ app.get('/', (req, res) => {
 // Authentication middleware
 async function authenticate(req, res, next) {
   try {
-    const authHeader = req.headers.authorization || '';
+    const authHeader = req.headers.authorization;
+
+    // 1. Check if header exists and starts with Bearer
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Unauthorized: No token provided' });
+    }
+
     const token = authHeader.split(' ')[1];
-    if (!token) return res.status(401).json({ error: 'Unauthorized: no token provided' });
 
+    // 2. Prevent using static API keys as Bearer tokens
     if (token === process.env.SUPABASE_KEY || token === process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      return res.status(401).json({ error: 'Invalid token: project key provided' });
+      return res.status(401).json({ error: 'Invalid token: Project key provided instead of user JWT' });
     }
 
-    // Decode token payload lightly for debugging
-    // try {
-    //   const payloadPart = token.split('.')[1] || '';
-    //   const normalized = payloadPart.replace(/-/g, '+').replace(/_/g, '/');
-    //   const decoded = Buffer.from(normalized, 'base64').toString('utf8');
-    //   const payload = JSON.parse(decoded);
-    //   console.log('Token payload preview:', {
-    //     sub: payload.sub,
-    //     aud: payload.aud,
-    //     role: payload.role,
-    //     exp: payload.exp
-    //   });
-    // } catch {
-    //   console.warn('Could not decode token payload');
-    // }
-
+    // 3. Verify token with Supabase
     const { data: { user }, error } = await supabase.auth.getUser(token);
+
     if (error || !user) {
-      console.error('Auth error from Supabase:', error);
-      return res.status(401).json({ error: 'Unauthorized' });
+      console.error('Supabase Auth Error:', error?.message);
+      return res.status(401).json({ error: 'Unauthorized: Invalid or expired token' });
     }
+
+    // 4. Attach user to request and proceed
     req.user = user;
     next();
   } catch (err) {

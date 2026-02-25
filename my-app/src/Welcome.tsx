@@ -17,22 +17,31 @@ const Welcome = () => {
     // Simple email regex
     return /^[a-zA-Z0-9._%+-]+@dal\.ca$/.test(email);
   };
+  // const handleGetStarted = () => {
+  //   // Check if the user has already triggered the start sequence
+  //   const hasStarted = localStorage.getItem('app_started');
+  
+  //   // Set animation to true only if the flag doesn't exist yet
+  //   const shouldAnimate = !hasStarted;
+  
+  //   if (shouldAnimate) {
+  //     // Save the flag so fromWelcome is false next time they visit this page
+  //     localStorage.setItem('app_started', 'true');
+  //   }
+  
+  //   if (isLogin) {
+  //     navigate('/Home', { state: { fromWelcome: shouldAnimate } });
+  //   } else {
+  //     navigate('/Input', { state: { fromWelcome: shouldAnimate } });
+  //   }
+  // };
+
   const handleGetStarted = () => {
-    // Check if the user has already triggered the start sequence
-    const hasStarted = localStorage.getItem('app_started');
-  
-    // Set animation to true only if the flag doesn't exist yet
-    const shouldAnimate = !hasStarted;
-  
-    if (shouldAnimate) {
-      // Save the flag so fromWelcome is false next time they visit this page
-      localStorage.setItem('app_started', 'true');
-    }
-  
+    // Replace 'isLoggedIn' with your actual auth check (e.g., a state variable or localStorage check)
     if (isLogin) {
-      navigate('/Home', { state: { fromWelcome: shouldAnimate } });
+      navigate('/Home', { state: { fromWelcome: true } });
     } else {
-      navigate('/Input', { state: { fromWelcome: shouldAnimate } });
+      navigate('/Input', { state: { fromWelcome: true } });
     }
   };
   
