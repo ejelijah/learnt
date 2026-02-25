@@ -42,11 +42,6 @@ app.use(cors({
   credentials: true // Allow cookies to be sent
 }));
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
-
 
 const openai = new OpenAI({
   baseURL: 'https://api.openllm-platform.com/v1',
@@ -66,38 +61,30 @@ app.get('/', (req, res) => {
 });
 
 // Authentication middleware
+
 async function authenticate(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
-
-    // 1. Check if header exists and starts with Bearer
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'Unauthorized: No token provided' });
+    if (!authHeader?.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'No token provided' });
     }
 
     const token = authHeader.split(' ')[1];
 
-    // 2. Prevent using static API keys as Bearer tokens
-    if (token === process.env.SUPABASE_KEY || token === process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      return res.status(401).json({ error: 'Invalid token: Project key provided instead of user JWT' });
-    }
-
-    // 3. Verify token with Supabase
+    // This checks if the token is a valid USER session JWT
     const { data: { user }, error } = await supabase.auth.getUser(token);
 
     if (error || !user) {
-      console.error('Supabase Auth Error:', error?.message);
-      return res.status(401).json({ error: 'Unauthorized: Invalid or expired token' });
+      return res.status(401).json({ error: 'Invalid user session' });
     }
 
-    // 4. Attach user to request and proceed
     req.user = user;
     next();
   } catch (err) {
-    console.error('Authentication middleware error:', err.message);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Server error' });
   }
 }
+
 
 // Upload and flashcard generation route
 app.post('/api/upload', authenticate, upload.single('file'), async (req, res) => {

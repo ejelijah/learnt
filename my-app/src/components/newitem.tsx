@@ -42,7 +42,7 @@ const NewItem = () => {
         if (token) headers['Authorization'] = `Bearer ${token}`;
         console.log(formData);
 
-        const response = await fetch('/api/upload', {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND} /api/upload`, {
             method: 'POST',
             body: formData,
             headers,
@@ -64,7 +64,7 @@ const NewItem = () => {
             setFile(null);
             setIsPublic(true);
             // navigate after successful submit
-            navigate('../Home');
+            navigate('/Home');
         }
     }
         catch (error) {
