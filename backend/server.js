@@ -48,10 +48,10 @@ app.use(cors({
 
 
 
-const openai = new OpenAI({
-  baseURL: 'https://api.openllm-platform.com/v1',
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// const openai = new OpenAI({
+//   baseURL: 'https://api.openllm-platform.com/v1',
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
 
 const groq = new Groq({
   apiKey: process.env.GORQ_API_KEY,
