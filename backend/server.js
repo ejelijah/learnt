@@ -11,7 +11,9 @@ import { createRequire } from "module";
 import extractTextFromPDF from './test.js';
 import OpenAI from 'openai';
 import Groq  from 'groq-sdk';
-import { createClient } from '@supabase/supabase-js';
+import JSZip from 'jszip';
+import fs from 'fs';
+import path from 'path';
 
 const require = createRequire(import.meta.url);
 
@@ -32,28 +34,35 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(0) === -1) {
+    
+    // FIX: Check if the incoming 'origin' is in your 'allowedOrigins' array
+    if (allowedOrigins.indexOf(origin) === -1) {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
     }
     return callback(null, true);
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed methods
-  credentials: true // Allow cookies to be sent
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
 }));
+
 
 
 const openai = new OpenAI({
   baseURL: 'https://api.openllm-platform.com/v1',
-  apiKey: 'llm-in-nova-scotia'
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 const groq = new Groq({
-  apiKey: process.env.gorq,
+  apiKey: process.env.GORQ_API_KEY,
 });
-
-// Use memory storage for file uploads
-const upload = multer({ storage: multer.memoryStorage() });
+// Use in‑memory storage for file uploads (no files written to disk)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 20 * 1024 * 1024, // 20MB max per file to protect memory
+  },
+});
 
 // Root route
 app.get('/', (req, res) => {
@@ -86,11 +95,39 @@ async function authenticate(req, res, next) {
 }
 
 
+// Helper: extract readable text from a PPTX buffer without saving to disk
+async function extractTextFromPptxBuffer(buffer) {
+  const zip = await JSZip.loadAsync(buffer);
+
+  // Collect slide XML files
+  const slideNames = Object.keys(zip.files)
+    .filter((name) => name.startsWith('ppt/slides/slide') && name.endsWith('.xml'))
+    .sort((a, b) => {
+      const getNum = (n) => parseInt(n.match(/slide(\d+)\.xml$/)?.[1] || '0', 10);
+      return getNum(a) - getNum(b);
+    });
+
+  const texts = [];
+
+  for (const name of slideNames) {
+    const file = zip.file(name);
+    if (!file) continue;
+
+    const xml = await file.async('text');
+    // Very simple tag stripper for text content
+    const withoutTags = xml.replace(/<[^>]+>/g, ' ');
+    const normalized = withoutTags.replace(/\s+/g, ' ').trim();
+    if (normalized) texts.push(normalized);
+  }
+
+  return texts.join('\n\n');
+}
+
 // Upload and flashcard generation route
 app.post('/api/upload', authenticate, upload.single('file'), async (req, res) => {
   try {
-    let text = req.body.notes || '';
-    let uploadedPublicUrl = req.body.isPublic === true;
+    let text = (req.body.notes || '').toString();
+    const uploadedPublicUrl = req.body.isPublic === true || req.body.isPublic === 'true';
     const userId = req.user?.id;
 
     if (!userId) {
@@ -98,69 +135,111 @@ app.post('/api/upload', authenticate, upload.single('file'), async (req, res) =>
       return res.status(401).json({ error: 'Unauthorized user' });
     }
 
+    // 1. Parse uploaded file (from memory) into text
     if (req.file) {
       console.log(' Uploaded file:', req.file.originalname, req.file.mimetype);
       const buffer = req.file.buffer;
 
-      try {
-        console.log(' Starting file processing for:', req.file.mimetype);
-        
-        switch (req.file.mimetype) {
-          case "application/pdf":
-            console.log(" Extracting text from PDF...");
-            try {
-              const pdfData = await PdfParse(req.file.buffer);
-              text = pdfData.text?.trim() || "";
-              if (!text) {
-                const pdfDoc = await PDFDocument.load(req.file.buffer);
-                const numPages = pdfDoc.getPageCount();
-                text = await extractTextFromPDF(buffer, numPages);
-              }
-            } catch (pdfErr) {
-              return res.status(400).json({ error: `Failed to parse PDF: ${pdfErr.message}` });
+      if (!buffer) {
+        return res.status(400).json({ error: 'Uploaded file buffer is empty' });
+      }
+
+      console.log(' Starting in‑memory file processing for:', req.file.mimetype);
+
+      switch (req.file.mimetype) {
+        case 'application/pdf':
+          console.log('[Parser] Extracting text from PDF (buffer)...');
+          try {
+            const pdfData = await PdfParse(buffer);
+            let extractedText = pdfData.text?.trim() || '';
+
+            if (!extractedText) {
+              console.log('[Parser] Standard PDF parse empty, trying deep OCR extraction...');
+              const pdfDoc = await PDFDocument.load(buffer);
+              const numPages = pdfDoc.getPageCount();
+              extractedText = await extractTextFromPDF(buffer, numPages);
             }
-            break;
 
-          case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-            try {
-              const result = await mammoth.extractRawText({ buffer });
-              text = result.value.trim();
-            } catch(docxErr) {
-              return res.status(400).json({ error: `Failed to parse DOCX: ${docxErr.message}` });
+            if (!extractedText) {
+              throw new Error('PDF appears to be empty or contains only images/scans.');
             }
-            break;
 
-          case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-            try {
-              const { PptxParser } = await import('pptx-parser');
-              const slides = await PptxParser.parseBuffer(buffer);
-              text = Array.isArray(slides) ? slides.join("\n\n") : JSON.stringify(slides);
-            } catch(pptxErr) {
-              return res.status(400).json({ error: `Failed to parse PPTX: ${pptxErr.message}` });
+            text = text
+              ? `${text}\n\n${extractedText}`
+              : extractedText;
+          } catch (pdfErr) {
+            console.error('PDF Parsing Error:', pdfErr);
+            return res.status(400).json({ error: `Failed to parse PDF: ${pdfErr.message || pdfErr}` });
+          }
+          break;
+
+        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+          console.log(' Extracting text from DOCX (buffer)...');
+          try {
+            const result = await mammoth.extractRawText({ buffer });
+            const extractedText = result.value?.trim() || '';
+            if (!extractedText) {
+              throw new Error('DOCX appears to be empty.');
             }
-            break;
+            text = text
+              ? `${text}\n\n${extractedText}`
+              : extractedText;
+          } catch (docxErr) {
+            console.error('DOCX Parsing Error:', docxErr);
+            return res.status(400).json({ error: `Failed to parse DOCX: ${docxErr.message || docxErr}` });
+          }
+          break;
 
-          case "text/plain":
-            text = buffer.toString("utf-8").trim();
-            break;
+        case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+          console.log('[Parser] Extracting text from PPTX (buffer)...');
+          try {
+            const extractedText = (await extractTextFromPptxBuffer(buffer)).trim();
+            if (!extractedText) {
+              throw new Error('PPTX appears to be empty.');
+            }
+            text = text
+              ? `${text}\n\n${extractedText}`
+              : extractedText;
+            console.log(`[Parser] Successfully extracted ${extractedText.length} characters from PPTX`);
+          } catch (pptErr) {
+            console.error('PPTX Parsing Error:', pptErr);
+            return res.status(500).json({ error: `Failed to parse PPTX file: ${pptErr.message || pptErr}` });
+          }
+          break;
 
-          default:
-            return res.status(415).json({ error: `Unsupported file type: ${req.file.mimetype}` });
-        }
-      } catch (generalErr) {
-        return res.status(500).json({ error: 'Failed to process file: ' + generalErr.message });
+        case 'text/plain':
+          console.log('[Parser] Extracting text from plain text (buffer)...');
+          try {
+            const extractedText = buffer.toString('utf-8').trim();
+            if (!extractedText) {
+              throw new Error('Text file appears to be empty.');
+            }
+            text = text
+              ? `${text}\n\n${extractedText}`
+              : extractedText;
+          } catch (txtErr) {
+            console.error('Text Parsing Error:', txtErr);
+            return res.status(400).json({ error: `Failed to parse text file: ${txtErr.message || txtErr}` });
+          }
+          break;
+
+        default:
+          console.error('Unsupported file type:', req.file.mimetype);
+          return res.status(415).json({ error: `Unsupported file type: ${req.file.mimetype}` });
       }
     }
 
-    if (!text) {
+    // Nothing to process
+    if (!text || !text.trim()) {
       return res.status(400).json({ error: 'No text or file provided' });
     }
 
-    // === CHUNKING LOGIC FOR LARGE TEXT ===
+    // 2. Chunking logic for large text (for LLM)
     const CHUNK_SIZE = 12000; // Character limit per API call
     const chunks = [];
-    for (let i = 0; i < text.length; i += CHUNK_SIZE) {
-      chunks.push(text.substring(i, i + CHUNK_SIZE));
+    const sourceText = text.trim();
+    for (let i = 0; i < sourceText.length; i += CHUNK_SIZE) {
+      chunks.push(sourceText.substring(i, i + CHUNK_SIZE));
     }
 
     console.log(`[AI] Processing ${chunks.length} chunks...`);
@@ -172,12 +251,11 @@ app.post('/api/upload', authenticate, upload.single('file'), async (req, res) =>
       console.log(`[AI] Processing chunk ${i + 1}/${chunks.length}`);
       
       const prompt = `
-        Create flashcards from the following content. Format your response as a JSON object with a "title" field and a "cards" array. Each card should have a "question" and "answer" field.
-        
-        Content to convert:
-        ${chunks[i]}
-
-        Generate clear, concise flashcards. Return ONLY the JSON string.
+Create flashcards from the following content. Format your response as a JSON object with a "title" field and a "cards" array. Each card should have a "question" and "answer" field.
+IMPORTANT: You must always provide a descriptive "title" that summarizes the topic. If the content is brief or lacks a clear heading, infer the most appropriate subject matter to create a meaningful title.
+Content to convert:
+${chunks[i]}
+Generate clear, concise flashcards. Return ONLY the JSON string.
       `;
 
       try {
@@ -190,8 +268,25 @@ app.post('/api/upload', authenticate, upload.single('file'), async (req, res) =>
           response_format: { type: "json_object" } // Ensures JSON output if supported
         });
 
-        const content = result.choices[0].message.content.trim();
+        let content = result.choices[0].message.content.trim();
+          // --- DEBUGGING LOGS ---
+    console.log(`[DEBUG] Raw Content from AI for Chunk ${i + 1}:`, content);
+
+    // SAFETY: Remove markdown code blocks if the model included them
+    if (content.startsWith('```')) {
+      content = content.replace(/^```json\n?|```\$/g, '').trim();
+    }
+
+
         const parsed = JSON.parse(content);
+
+         // Validate the structure
+    if (!parsed.title || !Array.isArray(parsed.cards)) {
+      console.warn(`[DEBUG] Chunk ${i + 1} returned unexpected JSON structure:`, parsed);
+    }
+
+    console.log(`[AI] Chunk ${i + 1} generated ${parsed.cards?.length || 0} flashcards with title: "${parsed.title}"`);
+
 
         if (i === 0 && parsed.title) finalTitle = parsed.title;
         if (parsed.cards && Array.isArray(parsed.cards)) {
@@ -207,37 +302,41 @@ app.post('/api/upload', authenticate, upload.single('file'), async (req, res) =>
       return res.status(500).json({ error: 'Failed to generate any flashcards from the provided text' });
     }
 
-    // === DB INSERTION ===
+    // 3. DB insertion
     try {
       console.log('[DB] Inserting flashcards...');
       const { data: container, error: container_error } = await supabase
         .from('flashcards_container')
-        .insert([{ 
-          title: finalTitle,
-          user_id: userId,
-          is_public: req.body.isPublic
-        }])
+        .insert({ title: finalTitle, user_id: userId, is_public: uploadedPublicUrl })
         .select()
         .single();
 
-      if (container_error) throw container_error;
-      if (container_error){
-        console.error(container_error.message
-        );        return res.status(500).json({ error: 'Failed to create flashcard container' });
+      if (container_error) {
+        console.error(container_error.message);
+        return res.status(500).json({ error: 'Failed to create flashcard container' });
       }
       
       const { error: insertError } = await supabase
         .from('flashcards')
-        .insert(allFlashcards.map(card => ({
+        .insert(allFlashcards.map((card) => ({
           container_id: container.id,
           question: card.question,
           answer: card.answer,
-          set_id: userId, 
+          set_id: userId,
         })));
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        console.error('[DB Error] insert flashcards', insertError);
+        return res.status(500).json({ error: 'Failed to store flashcards' });
+      }
 
-      return res.json({ flashcards: allFlashcards, title: finalTitle, fileUrl: uploadedPublicUrl });
+      // Return container id so frontend can route user to the new flashcard set
+      return res.json({
+        containerId: container.id,
+        flashcards: allFlashcards,
+        title: finalTitle,
+        fileUrl: uploadedPublicUrl,
+      });
     } catch (dbErr) {
       console.error('[DB Error]', dbErr);
       return res.status(500).json({ error: 'Failed to store flashcards' });
@@ -249,6 +348,7 @@ app.post('/api/upload', authenticate, upload.single('file'), async (req, res) =>
       res.status(500).json({ error: 'Internal server error' });
     }
   }
+  console.log('Finished processing upload request');
 });
 
 

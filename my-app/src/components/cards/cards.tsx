@@ -227,7 +227,7 @@ const Cards = () => {
 
         console.log('✅ Deck created successfully');
         alert("Deck created successfully!");
-        navigate('/');
+        navigate('/Home');
       }
     } catch (err) {
       console.error("❌ Error saving deck:", err);
