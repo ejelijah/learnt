@@ -30,7 +30,8 @@ app.use(express.json());
 const allowedOrigins = [
   'https://sensational-mooncake-205e97.netlify.app',
   'http://localhost:5173', 
-  'http://localhost:3000'
+  'http://localhost:3000',
+  'https://learnthentakeoutthel.netlify.app'
 ]; // Allow all origins for development; replace with specific URLs in production
 
 app.use(cors({
