@@ -12,16 +12,19 @@ import extractTextFromPDF from './test.js';
 import OpenAI from 'openai';
 import Groq  from 'groq-sdk';
 import JSZip from 'jszip';
+import { Resend } from 'resend';
 import fs from 'fs';
 import path from 'path';
 
+
 const require = createRequire(import.meta.url);
+
 
 dotenv.config();
 
 const app = express();
+app.use(express.json());
 
-// Validate required environment variables
 
 // Configure CORS for specific origins
 const allowedOrigins = [
@@ -45,6 +48,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
+
+
 
 
 
@@ -351,9 +356,42 @@ Generate clear, concise flashcards. Return ONLY the JSON string.
   console.log('Finished processing upload request');
 });
 
+// Feedback route: send email only (nothing stored)
+// const resend = new Resend(process.env.RESEND_API_KEY);
+// const FEEDBACK_TO_EMAIL = 'el797555@dal.ca';
 
+// app.post('/api/feedback', async (req, res) => {
+//   try {
+//     const { user_email, subject, message } = req.body || {};
+//     if (!message || typeof message !== 'string' || !message.trim()) {
+//       return res.status(400).json({ error: 'Message is required' });
+//     }
+//     if (!process.env.RESEND_API_KEY) {
+//       console.error('[Feedback] RESEND_API_KEY is not set');
+//       return res.status(500).json({ error: 'Email is not configured' });
+//     }
+//     const fromEmail = (user_email && typeof user_email === 'string') ? user_email : 'feedback@resend.dev';
+//     const subj = (subject && typeof subject === 'string') ? subject.trim() : 'App feedback';
+//     const body = message.trim();
+//     const textBody = body + (user_email ? `\n\n— From: ${user_email}` : '');
 
-
+//     const { error } = await resend.emails.send({
+//       from: 'Feedback <onboarding@resend.dev>',
+//       to: [FEEDBACK_TO_EMAIL],
+//       replyTo: fromEmail.includes('@') ? fromEmail : undefined,
+//       subject: subj,
+//       text: textBody,
+//     });
+//     if (error) {
+//       console.error('[Feedback] Resend error:', error);
+//       return res.status(500).json({ error: 'Failed to send feedback' });
+//     }
+//     return res.status(200).json({ success: true });
+//   } catch (err) {
+//     console.error('[Feedback] Error:', err);
+//     return res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
 
 // Start server
 app.listen(3001, () => console.log('Server listening on http://localhost:3001'));

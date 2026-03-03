@@ -216,6 +216,9 @@ const Home: React.FC  = () => {
       onClick={() => {
         navigate('/create');
       }}>Sell/Buy</button>
+      <button className="nav-btn" onClick={() => navigate('/feedback')}>
+        Feedback
+      </button>
       </nav>
     </div>
 
