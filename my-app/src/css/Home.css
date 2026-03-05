@@ -35,26 +35,27 @@
     --main-button: #f4f6f8;
     --main-button-text: #0f172a;
   }
-  @media (max-width: 500px) {
-
+  @media (max-width: 600px) {
     .search-input {
-      @apply w-full max-w-none;
+      @apply w-full max-w-none text-sm py-1 px-2;
     }
+  
     .nav-buttons button {
-      @apply p-0.5 text-xs leading-none;
+      @apply p-0.5 text-[10px] leading-none min-w-fit;
     }
+  
     .header {
-      @apply px-2 py-2;
-    
+      @apply px-1 py-1 flex-wrap gap-1;
+    }
+  
     .futuristic-logo {
-      @apply text-xs tracking-[1px];
+      @apply text-[10px] tracking-tight;
       #letter-l {
-        @apply text-2xl;
+        @apply text-[40px];
       }
     }
   }
-
-  }
+  
   
   html, body {
     @apply overflow-x-hidden m-0 p-0;

@@ -1,3 +1,7 @@
+/**
+ * @add Voice to text functionality to the home page if it gains popularity
+ */
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../superbaseClient';

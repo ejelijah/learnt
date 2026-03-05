@@ -10,9 +10,14 @@ const NewItem = () => {
   const navigate = useNavigate();
   
   // Set isLoading to false by default so the form shows up
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading] = useState(false); 
   const [isProcessing, setIsProcessing] = useState(false);
   const [status, setStatus] = useState("");
+
+  // Mode toggle: manual text vs voice input
+  const [mode, setMode] = useState<'manual' | 'voice'>('manual');
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -20,11 +25,9 @@ const NewItem = () => {
     }
   };
 
-  const handleGenerate = async (event: React.FormEvent) => {
-    event.preventDefault();
-
+  const generateFlashcards = async (notesInput: string, fileInput: File | null) => {
     // 1. VALIDATION
-    if (!file && !notes.trim()) {
+    if (!fileInput && !notesInput.trim()) {
       setError('Please enter notes or select a file to upload.');
       return;
     }
@@ -36,9 +39,9 @@ const NewItem = () => {
 
     try {
       const formData = new FormData();
-      formData.append('notes', notes);
-      if (file) {
-        formData.append('file', file);
+      formData.append('notes', notesInput);
+      if (fileInput) {
+        formData.append('file', fileInput);
       }
       formData.append('isPublic', isPublic ? 'true' : 'false');
 
@@ -100,6 +103,104 @@ const NewItem = () => {
     }
   };
 
+  const handleGenerate = async (event: React.FormEvent) => {
+    event.preventDefault();
+    await generateFlashcards(notes, file);
+  };
+
+  const sendAudioForTranscription = async (audioBlob: Blob) => {
+    setIsProcessing(true);
+    setStatus("Transcribing audio...");
+    setError("");
+
+    try {
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'recording.webm');
+
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const response = await fetch(`${import.meta.env.VITE_BACKEND}/api/transcribe`, {
+        method: 'POST',
+        headers,
+        body: formData,
+      });
+
+      const data = await response.json().catch(() => ({} as any));
+
+      if (!response.ok) {
+        const message =
+          (data?.error && (data.error.message || data.error)) ||
+          data?.message ||
+          `Server error: ${response.status}`;
+
+        console.error("Transcription failed:", {
+          status: response.status,
+          statusText: response.statusText,
+          body: data,
+          message,
+        });
+
+        throw new Error(message);
+      }
+
+      const text = (data as any).text as string | undefined;
+      if (!text) {
+        throw new Error('No transcription text returned from server.');
+      }
+
+      setNotes(text);
+      // Immediately generate flashcards from the transcribed text
+      await generateFlashcards(text, file);
+    } catch (err) {
+      console.error("Transcription error:", err);
+      setError(err instanceof Error ? err.message : 'Failed to transcribe audio.');
+      setIsProcessing(false);
+      setStatus("");
+    }
+  };
+
+  const startRecording = async () => {
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setError('Your browser does not support audio recording.');
+        return;
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+
+      const chunks: Blob[] = [];
+      recorder.ondataavailable = (event: BlobEvent) => {
+        if (event.data && event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        setIsRecording(false);
+        stream.getTracks().forEach((track) => track.stop());
+        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        await sendAudioForTranscription(audioBlob);
+      };
+
+      setMediaRecorder(recorder);
+      setIsRecording(true);
+      recorder.start();
+    } catch (err) {
+      console.error("Recording error:", err);
+      setError('Could not start recording. Please check microphone permissions.');
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+    }
+  };
+
   // --- RENDERING LOGIC ---
 
   if (isProcessing) {
@@ -154,46 +255,75 @@ const NewItem = () => {
       </button>
 
       <form onSubmit={handleGenerate} className="newitem-form">
-        <button 
-          type="button" 
-          onClick={() => navigate('/cards')} 
-          style={{ 
-            marginBottom: '10px',
-            backgroundColor: '#007bff', 
-            color: 'white', 
-            border: 'none', 
-            padding: '10px 15px', 
-            borderRadius: '5px', 
-            cursor: 'pointer' 
-          }}
-        >
-          make cards manually
-        </button>
-
-        <div>
-          <label className='size-lg p-4 text-secondary-p'>Handwritten Notes:</label>
-          <textarea
-            value={notes}
-            onChange={e => setNotes(e.target.value)}
-            placeholder="Type your notes here..."
-            rows={6}
-            style={{ width: '100%' }}
-          />
+        
+        {/* Mode toggle: Manual vs Voice */}
+        <div className="flex gap-2 mb-4 justify-center">
+          <button
+            type="button"
+            className={`px-4 py-2 rounded-full border text-sm ${mode === 'manual' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'}`}
+            onClick={() => navigate('/cards')} 
+          >
+            Manual Entry
+          </button>
+          <button
+            type="button"
+            className={`px-4 py-2 rounded-full border text-sm ${mode === 'voice' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'}`}
+            onClick={() => setMode('voice')}
+          >
+            Voice Mode
+          </button>
         </div>
 
-        <div className='size-lg text-secondary-p'>
-          <label>Or upload a file (PDF, PPTX, DOC):</label>
-          <input
-            type="file"
-            accept=".pdf,.pptx,.docx"
-            onChange={handleFileChange}
-          />
-          {file && (
-            <div className='size-md p-4 text-secondary-p'>
-              Selected file: {file.name}
+        {mode === 'manual' && (
+          <>
+            <div>
+              <label className='size-lg p-4 text-secondary-p'>Handwritten Notes:</label>
+              <textarea
+                value={notes}
+                onChange={e => setNotes(e.target.value)}
+                placeholder="Type your notes here..."
+                rows={6}
+                style={{ width: '100%' }}
+              />
             </div>
-          )}
-        </div>
+
+            <div className='size-lg text-secondary-p'>
+              <label>Or upload a file (PDF, PPTX, DOC):</label>
+              <input
+                type="file"
+                accept=".pdf,.pptx,.docx"
+                onChange={handleFileChange}
+              />
+              {file && (
+                <div className='size-md p-4 text-secondary-p'>
+                  Selected file: {file.name}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {mode === 'voice' && (
+          <div className="size-lg p-4 text-secondary-p">
+            <p className="mb-2">
+              Use your voice to create flashcards. We&apos;ll transcribe your speech and generate cards automatically.
+            </p>
+            <button
+              type="button"
+              onClick={isRecording ? stopRecording : startRecording}
+              className={`px-4 py-2 rounded-full text-white ${isRecording ? 'bg-red-600' : 'bg-green-600'}`}
+              disabled={isProcessing}
+            >
+              {isRecording ? 'Stop Recording' : 'Start Recording'}
+            </button>
+            {isRecording && (
+              <div className="flex items-center mt-2">
+                <span className="inline-flex h-3 w-3 rounded-full bg-red-500 animate-ping mr-2" />
+                <span className="text-red-500 text-sm">Recording...</span>
+              </div>
+            )}
+          </div>
+        )}
 
         <div>
           <label className='m-2 p-4 size-lg text-secondary-p'>

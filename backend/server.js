@@ -357,6 +357,54 @@ Generate clear, concise flashcards. Return ONLY the JSON string.
   console.log('Finished processing upload request');
 });
 
+// New route: speech‑to‑text transcription using Groq Whisper (keeps /api/upload unchanged)
+app.post('/api/transcribe', authenticate, upload.single('audio'), async (req, res) => {
+  try {
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ error: 'No audio file uploaded' });
+    }
+
+    const groqApiKey = process.env.GROQ_API_KEY || process.env.GORQ_API_KEY;
+    if (!groqApiKey) {
+      console.error('[Transcribe] Missing GROQ_API_KEY / GORQ_API_KEY');
+      return res.status(500).json({ error: 'Groq API key not configured' });
+    }
+
+    const audioBuffer = req.file.buffer;
+    const mimeType = req.file.mimetype || 'audio/webm';
+    const fileName = req.file.originalname || 'audio.webm';
+
+    const formData = new FormData();
+    formData.append('file', new Blob([audioBuffer], { type: mimeType }), fileName);
+    formData.append('model', 'whisper-large-v3');
+
+    const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${groqApiKey}`,
+      },
+      body: formData,
+    });
+
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      console.error('[Transcribe] Groq error:', data);
+      return res.status(500).json({ error: data?.error?.message || 'Failed to transcribe audio' });
+    }
+
+    const text = data?.text || '';
+    if (!text) {
+      return res.status(500).json({ error: 'No transcription text returned' });
+    }
+
+    return res.json({ text });
+  } catch (err) {
+    console.error('[Transcribe] Server error:', err.message || err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Feedback route: send email only (nothing stored)
 // const resend = new Resend(process.env.RESEND_API_KEY);
 // const FEEDBACK_TO_EMAIL = 'el797555@dal.ca';
@@ -395,6 +443,7 @@ Generate clear, concise flashcards. Return ONLY the JSON string.
 // });
 
 // Start server
+// (new /api/transcribe route is declared above)
 app.listen(3001, () => console.log('Server listening on http://localhost:3001'));
 
 
