@@ -4,7 +4,6 @@ import './css/wel.css';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../superbaseClient';
 
-
 const Welcome = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -12,44 +11,22 @@ const Welcome = () => {
   const [isLogin, setIsLogin] = useState(false);
   const navigate = useNavigate();
 
-
   const validateEmail = (email: string) => {
-    // Simple email regex
+    // Standard email regex to allow any valid email format
     return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
   };
-  // const handleGetStarted = () => {
-  //   // Check if the user has already triggered the start sequence
-  //   const hasStarted = localStorage.getItem('app_started');
-  
-  //   // Set animation to true only if the flag doesn't exist yet
-  //   const shouldAnimate = !hasStarted;
-  
-  //   if (shouldAnimate) {
-  //     // Save the flag so fromWelcome is false next time they visit this page
-  //     localStorage.setItem('app_started', 'true');
-  //   }
-  
-  //   if (isLogin) {
-  //     navigate('/Home', { state: { fromWelcome: shouldAnimate } });
-  //   } else {
-  //     navigate('/Input', { state: { fromWelcome: shouldAnimate } });
-  //   }
-  // };
 
   const handleGetStarted = () => {
-    // Replace 'isLoggedIn' with your actual auth check (e.g., a state variable or localStorage check)
     if (isLogin) {
       navigate('/Home', { state: { fromWelcome: true } });
     } else {
       navigate('/Input', { state: { fromWelcome: true } });
     }
   };
-  
 
   const use_handleSubmit = async () => {
     if (!validateEmail(email)) {
-      setError('Please enter a valid email.');
-      alert('sorry only dal emails are allowed');
+      setError('Please enter a valid email address.');
       return;
     }
     if (password.length < 6) {
@@ -57,8 +34,9 @@ const Welcome = () => {
       return;
     }
     setError('');
+
     if (isLogin) {
-      // Login flow for existing users (Supabase)
+      // Login flow
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) {
         if (signInError.message.includes('Invalid login credentials')) {
@@ -68,10 +46,10 @@ const Welcome = () => {
         }
         return;
       }
-    handleGetStarted();
+      handleGetStarted();
     } else {
-      // Signup flow for new users (Supabase)
-      const {error: signUpError } = await supabase.auth.signUp({ email, password });
+      // Signup flow
+      const { error: signUpError } = await supabase.auth.signUp({ email, password });
       if (signUpError) {
         if (signUpError.message.includes('User already registered')) {
           setError('This email is already registered. Please log in instead.');
@@ -81,20 +59,20 @@ const Welcome = () => {
         }
         return;
       }
-      // Get the user id from Supabase Auth
+
       const { data: userData, error: userError } = await supabase.auth.getUser();
       if (userError || !userData?.user?.id) {
         setError('Account created, but failed to get user ID.');
         return;
       }
+
       const userId = userData.user.id;
-      // Insert user info into users table with user_id
-      const { error: dbError } = await supabase.from('users').insert([{ user_id: userId}]);
+      const { error: dbError } = await supabase.from('users').insert([{ user_id: userId }]);
       if (dbError) {
         setError('Account created, but failed to save user info.');
         return;
       }
-      navigate('/input');
+      
       handleGetStarted();
     }
   };
@@ -135,21 +113,20 @@ const Welcome = () => {
           <button
             className="submit"
             onClick={use_handleSubmit}
-            
           >
             {isLogin ? 'Login' : 'Sign Up'}
           </button>
         </div>
         <button
-            className="toggle"
-            style={{ marginLeft: '10px' }}
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setError('');
-            }}
-          >
-            {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Login'}
-          </button>
+          className="toggle"
+          style={{ marginLeft: '10px' }}
+          onClick={() => {
+            setIsLogin(!isLogin);
+            setError('');
+          }}
+        >
+          {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Login'}
+        </button>
       </div>
     </>
   );
