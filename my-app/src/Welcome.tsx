@@ -15,7 +15,7 @@ const Welcome = () => {
 
   const validateEmail = (email: string) => {
     // Simple email regex
-    return /^[a-zA-Z0-9._%+-]+@dal\.ca$/.test(email);
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
   };
   // const handleGetStarted = () => {
   //   // Check if the user has already triggered the start sequence
